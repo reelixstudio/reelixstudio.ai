@@ -47,6 +47,7 @@ html = '''<!doctype html>
 
 with zipfile.ZipFile(ROOT / 'Reelix-learning-pack.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
     archive.write(ROOT / 'Reelix-production-prompts.md', 'Reelix-production-prompts.md')
+    archive.write(ROOT / 'Weekend-workshop-guide.md', 'Weekend-workshop-guide.md')
     for name in ('character', 'location', 'temple', 'headphones', 'board', 'brush', 'espresso', 'start', 'end'):
         archive.write(ROOT / 'assets' / f'{name}.jpg', f'assets/{name}.jpg')
-    archive.writestr('START-HERE.txt', 'Reelix reference-to-ad teaching pack\n\nOpen Reelix-production-prompts.md for five saved production prompts. The JPEGs are Reelix-approved character, location, prop and shot examples. Numbered IMAGE/REFERENCE labels in the prompts refer to the original generation jobs, not to the order of files in this ZIP. Substitute your own licensed references when adapting.\n\nLesson: https://reelixstudio.ai/reference-to-ad/\nFilm: https://youtu.be/Ori5IKVOT_Y\nCredits and original inspiration links are on the lesson page.\n')
+    archive.writestr('START-HERE.txt', 'Reelix reference-to-ad teaching pack\n\nOpen Reelix-production-prompts.md for five saved production prompts and Weekend-workshop-guide.md for the 60-minute teaching plan and participant worksheet. The JPEGs are Reelix-approved character, location, prop and shot examples. Numbered IMAGE/REFERENCE labels in the prompts refer to the original generation jobs, not to the order of files in this ZIP. Substitute your own licensed references when adapting.\n\nLesson: https://reelixstudio.ai/reference-to-ad/\nFilm: https://youtu.be/Ori5IKVOT_Y\nCredits and original inspiration links are on the lesson page.\n')
