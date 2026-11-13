@@ -2,108 +2,249 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reelix Studio · Property videos for listing agents</title>
-<meta name="description" content="Reelix Studio makes AI-assisted property videos for real estate listing agents: one finished video up to 45 seconds, $350, two revision rounds included.">
-<meta property="og:title" content="Reelix Studio · Property videos for listing agents">
-<meta property="og:description" content="One finished property video up to 45 seconds. $350, two revision rounds included.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reelix Studio</title>
+<meta name="description" content="Every film is a recipe. Reelix Studio breaks a video into its ingredients (characters, places, props, light) so you can keep what works, swap what doesn't, and make it yours.">
+<meta property="og:title" content="Reelix Studio · Every film is a recipe">
+<meta property="og:description" content="Pull a shot apart. Swap an ingredient. See what it becomes.">
 <meta property="og:image" content="https://reelixstudio.ai/assets/og.png">
 <meta property="og:url" content="https://reelixstudio.ai/">
+<meta name="theme-color" content="#0b0b0c">
 <link rel="icon" href="assets/favicon.png">
-<link rel="stylesheet" href="assets/site.css">
+<style>
+  :root{ --bg:#0b0b0c; --ink:#f2f1ec; --dim:#8d8c86; --volt:#c9d84f; --amber:#e8b06a; --line:rgba(255,255,255,.14);
+         --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; text-decoration:none; }
+  .stage{ position:relative; height:100vh; height:100svh; min-height:620px; overflow:hidden; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
+  .stage canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; }
+  .stage canvas.hot{ cursor:pointer; } .stage canvas.grab{ cursor:grabbing; }
+  .nav{ position:absolute; top:22px; left:28px; right:28px; display:flex; align-items:center; gap:22px; z-index:4; font-size:13px; color:var(--dim); }
+  .nav .brand{ display:flex; align-items:center; gap:9px; color:var(--ink); font-weight:600; margin-right:auto; font-size:14px; }
+  .nav .brand img{ width:22px; height:22px; border-radius:5px; }
+  .nav a:hover{ color:var(--ink); }
+  .pill{ display:inline-block; color:#0b0b0c !important; background:var(--volt); padding:9px 15px; border-radius:999px; font-weight:600; font-size:13px; }
+  .pill:hover{ filter:brightness(1.08); }
+  .copy{ position:absolute; z-index:3; left:56px; top:clamp(96px,16vh,150px); max-width:390px; pointer-events:none; }
+  .copy h1{ font-size:clamp(34px,4.2vw,48px); line-height:1.04; letter-spacing:-.02em; margin:0 0 14px; font-weight:600; }
+  .copy p{ color:var(--dim); margin:0; font-size:16px; }
+  .hint{ position:absolute; z-index:3; left:56px; top:calc(clamp(96px,16vh,150px) + 190px); display:grid; gap:8px; font-size:13px; color:var(--dim); pointer-events:none; }
+  .hint b{ color:var(--ink); font-weight:600; }
+  .lbl{ position:absolute; z-index:2; transform:translate(0,-50%); font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--ink);
+        background:rgba(11,11,12,.8); padding:6px 9px; border-radius:4px; border:1px solid var(--line); white-space:nowrap; transition:opacity .2s, border-color .2s; }
+  .lbl i{ font-style:normal; color:var(--volt); margin-right:6px; } .lbl em{ font-style:normal; color:var(--dim); margin-left:6px; }
+  .lbl.btn{ cursor:pointer; } .lbl.btn:hover{ border-color:var(--volt); }
+  .lbl.off{ text-decoration:line-through; opacity:.5; } .lbl.shot{ pointer-events:none; }
+  .menu{ position:absolute; z-index:5; display:none; gap:6px; padding:6px; background:#151514; border:1px solid var(--line); border-radius:999px; box-shadow:0 10px 30px rgba(0,0,0,.5); }
+  .menu.on{ display:flex; }
+  .menu button{ all:unset; cursor:pointer; padding:8px 13px; border-radius:999px; font-size:12px; color:var(--ink); }
+  .menu button:hover{ background:#262624; } .menu button.go{ color:#0b0b0c; background:var(--volt); }
+  .menu button[disabled]{ opacity:.35; cursor:default; }
+  .result{ position:absolute; z-index:3; right:40px; bottom:34px; text-align:right; font-size:13px; color:var(--dim); max-width:520px; }
+  .result b{ color:var(--ink); font-weight:600; }
+  .tag{ display:inline-block; margin-left:8px; padding:3px 8px; border-radius:4px; font:600 10px/1.3 var(--mono); letter-spacing:.12em; text-transform:uppercase; vertical-align:1px; }
+  .tag.real{ background:rgba(201,216,79,.15); color:var(--volt); } .tag.new{ background:rgba(232,176,106,.18); color:var(--amber); }
+  .bar{ position:absolute; z-index:3; left:56px; bottom:34px; display:flex; gap:10px; align-items:center; }
+  .bar button{ all:unset; cursor:pointer; padding:9px 14px; border:1px solid var(--line); border-radius:999px; color:var(--ink); font-size:13px; }
+  .bar button:hover{ border-color:var(--volt); }
+  .bar .pill{ margin-left:6px; padding:10px 16px; font-size:14px; }
+
+  .how{ max-width:1100px; margin:0 auto; padding:96px 28px 72px; }
+  .how h2{ font-size:28px; letter-spacing:-.01em; margin:0 0 28px; font-weight:600; }
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .step{ border:1px solid var(--line); border-radius:12px; padding:22px; }
+  .step span{ font:600 11px/1 var(--mono); letter-spacing:.14em; color:var(--volt); }
+  .step h3{ margin:12px 0 6px; font-size:17px; font-weight:600; }
+  .step p{ margin:0; color:var(--dim); font-size:14px; }
+  .more{ margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; align-items:center; color:var(--dim); font-size:14px; }
+  .more a.link{ border-bottom:1px solid var(--line); } .more a.link:hover{ color:var(--ink); border-color:var(--ink); }
+  footer{ max-width:1100px; margin:0 auto; padding:24px 28px 48px; display:flex; gap:20px; flex-wrap:wrap; color:var(--dim); font-size:13px; border-top:1px solid var(--line); }
+  footer span{ margin-right:auto; }
+  footer a:hover{ color:var(--ink); }
+
+  @media (max-width: 760px){
+    .nav{ top:16px; left:16px; right:16px; gap:14px; } .nav .hide-sm{ display:none; }
+    .copy{ left:16px; right:16px; top:70px; max-width:none; }
+    .copy h1{ font-size:32px; margin-bottom:8px; } .copy p{ font-size:14px; }
+    .hint{ display:none; }
+    .result{ left:16px; right:16px; bottom:82px; text-align:left; max-width:none; font-size:12px; }
+    .bar{ left:16px; right:16px; bottom:22px; flex-wrap:wrap; }
+    .bar .pill{ margin-left:auto; }
+    .lbl{ font-size:9px; padding:4px 6px; } .lbl em{ display:none; }
+    .steps{ grid-template-columns:1fr; } .how{ padding:64px 16px 48px; } footer{ padding:20px 16px 40px; }
+  }
+  @media (prefers-reduced-motion: reduce){ .lbl{ transition:none; } }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
-<header class="top">
-  <div class="wrap">
+<section class="stage" id="S" aria-label="Interactive breakdown of a shot from the short film Last Train">
+  <nav class="nav">
     <a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a>
-    <nav>
-      <a href="#how" class="hide-sm">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <a class="hide-sm" href="#how">How it works</a>
+    <a class="hide-sm" href="/real-estate/">Real estate</a>
+    <a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a>
+  </nav>
+  <div class="copy"><h1>Every film is a recipe.</h1><p>Pull a shot apart. Swap an ingredient. See what it becomes.</p></div>
+  <div class="hint"><span><b>Drag</b> to turn it</span><span><b>Scroll</b> to pull it apart</span><span><b>Click a layer</b> to swap it</span></div>
+  <div class="menu" id="menu" role="menu"><button data-a="keep">Keep</button><button data-a="swap" class="go">Swap ↻</button><button data-a="remove">Remove</button></div>
+  <div class="bar"><button id="pull">Put together</button><button id="reset">Reset</button><a class="pill" href="https://room.reelixstudio.ai/">Open the Room →</a></div>
+  <div class="result" id="res" aria-live="polite"></div>
+</section>
+
+<section class="how" id="how">
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><span>01</span><h3>Break it down</h3><p>Any video, yours or one you love, comes apart into its ingredients: characters, places, props, light, timing.</p></div>
+    <div class="step"><span>02</span><h3>Keep, swap, remove</h3><p>Keep what works. Swap a character, a place or a prop for your own. Take out what you don’t need.</p></div>
+    <div class="step"><span>03</span><h3>Make it yours</h3><p>The new mix becomes new shots. Your team reviews them shot by shot in the Room until it’s done.</p></div>
   </div>
-</header>
-
-<main>
-  <div class="wrap hero">
-    <p class="eyebrow">For real estate listing agents</p>
-    <h1>A listing video that feels like a walk through the home.</h1>
-    <p class="lede">Send us your listing photos. We direct, generate and edit one finished property video, up to 45 seconds, ready to post. You approve every step before it moves forward.</p>
-    <a class="btn" href="mailto:hi@reelixstudio.ai?subject=Reelix%20Studio%20%E2%80%94%20property%20video%20request">Request a video</a>
-    <a class="btn ghost" href="#pricing">See pricing</a>
+  <div class="more">
+    <a class="pill" href="https://room.reelixstudio.ai/">Open the Room →</a>
+    <a class="link" href="/real-estate/">Property videos for listing agents</a>
+    <a class="link" href="/reference-to-ad/">Reference to ad: a lesson</a>
   </div>
-
-  <section id="how">
-    <div class="wrap">
-      <h2>How it works</h2>
-      <ol class="steps">
-        <li><h3>Send the listing</h3><p>Share the property photos, address details you want shown, and any must-have rooms or features.</p></li>
-        <li><h3>Approve the concept</h3><p>We send a short concept and storyboard. Nothing is produced until you approve it.</p></li>
-        <li><h3>We produce</h3><p>Creative direction, AI-assisted generation, editing, music and narration, handled personally by Danney.</p></li>
-        <li><h3>Review and receive</h3><p>Two revision rounds within the approved concept, then your final video file.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section id="pricing">
-    <div class="wrap">
-      <h2>Pricing</h2>
-      <div class="pricing">
-        <div class="card main">
-          <h3>Property video</h3>
-          <div class="price">$350 <small>USD per video</small></div>
-          <ul>
-            <li>One finished property video, up to 45 seconds</li>
-            <li>Concept and storyboard for your approval</li>
-            <li>Creative direction, generation and editing</li>
-            <li>Two revision rounds within the approved concept</li>
-            <li>Final video file delivered for your own posting</li>
-          </ul>
-          <a class="btn" href="mailto:hi@reelixstudio.ai?subject=Reelix%20Studio%20%E2%80%94%20property%20video%20request">Request a video</a>
-        </div>
-        <div class="card">
-          <h3>New concept</h3>
-          <div class="price">$500 <small>USD, quoted</small></div>
-          <ul>
-            <li>A different creative direction after a concept has been approved</li>
-            <li>Quoted separately and confirmed in writing before any work starts</li>
-          </ul>
-        </div>
-      </div>
-      <p class="note">Payment is collected securely by card through Stripe. Turnaround is confirmed in writing before you pay. See our <a href="terms.html#refunds">refund policy</a>.</p>
-    </div>
-  </section>
-
-  <section id="faq">
-    <div class="wrap">
-      <h2>Questions</h2>
-      <dl class="faq">
-        <dt>Is the video AI-generated?</dt>
-        <dd>Yes, it is AI-assisted. We use your listing photos as the reference and generate motion, people and atmosphere around them, then edit the result by hand. Every shot is reviewed before it reaches you.</dd>
-        <dt>What do I need to provide?</dt>
-        <dd>Listing photos you have the rights to use, plus anything you want highlighted. You confirm you are authorized to share the materials.</dd>
-        <dt>What counts as a revision?</dt>
-        <dd>Changes within the approved concept, such as shot order, timing, music, text or swapping a shot. A different creative direction is a new concept.</dd>
-        <dt>Can I get a refund?</dt>
-        <dd>Full refund before you approve the concept, 50% after concept approval, and no refund once the final video is delivered. Full details are in our <a href="terms.html#refunds">terms</a>.</dd>
-      </dl>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="wrap">
-      <h2>Contact</h2>
-      <p>Email <a href="mailto:hi@reelixstudio.ai">hi@reelixstudio.ai</a> for orders, questions and support.</p>
-      <p class="note">Reelix Studio LLC · Colorado, USA</p>
-    </div>
-  </section>
-</main>
+  <p style="color:var(--dim);font-size:13px;margin-top:28px">Every layer above comes from <i>Last Train</i>, a short made in Reelix for the Higgsfield weekly challenge.</p>
+</section>
 
 <footer>
-  <div class="wrap">
-    <span>© 2026 Reelix Studio LLC</span>
-    <span><a href="terms.html">Terms &amp; refunds</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:hi@reelixstudio.ai">hi@reelixstudio.ai</a></span>
-  </div>
+  <span>© Reelix Studio LLC</span>
+  <a href="mailto:hi@reelixstudio.ai">hi@reelixstudio.ai</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
 </footer>
+
+<script type="module">
+import * as THREE from 'three';
+const A = 'assets/recipe/';
+const LOOKS = ['dry', 'chase', 'storm', 'dawn'];
+const LOOKNAME = { dry: 'Platform, before', chase: 'The chase', storm: 'Storm on the roof', dawn: 'Dawn' };
+const SHOTNAME = { dry: 'K1 · umbrella twirl', chase: 'K11 · it’s in the car', storm: 'K14 · the fight', dawn: 'K18 · the last train' };
+const LAYERS = [
+  { key: 'place',    label: 'Place',     num: '01', vers: LOOKS },
+  { key: 'creature', label: 'Creature',  num: '02', vers: LOOKS },
+  { key: 'her',      label: 'Character', num: '03', vers: LOOKS },
+  { key: 'props',    label: 'Props',     num: '04', vers: [null] },
+];
+const host = document.getElementById('S');
+const small = () => host.clientWidth < 760;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const state = { apart: 0, apartT: 1, rotY: 0, rotX: 0, tRotY: -.42, tRotX: .05, sel: null, hover: null, shotPulse: 0 };
+const loader = new THREE.TextureLoader(), cache = {};
+const tex = n => cache[n] || (cache[n] = (() => { const t = loader.load(A + n + '.jpg', () => fit()); t.colorSpace = THREE.SRGBColorSpace; return t; })());
+const src = (L, v) => v ? `${L.key}-${v}` : L.key;
+LAYERS.forEach(L => tex(src(L, L.vers[0]))); tex('shot-dry');
+const warm = () => { LAYERS.forEach(L => L.vers.forEach(v => tex(src(L, v)))); LOOKS.forEach(l => tex('shot-' + l)); };
+setTimeout(warm, 900);
+
+const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setClearColor(0x0b0b0c);
+host.prepend(r.domElement); const cv = r.domElement; cv.setAttribute('aria-hidden', 'true');
+const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(34, 1, .1, 100);
+const g = new THREE.Group(); scene.add(g);
+function size() { const w = host.clientWidth, h = host.clientHeight; r.setSize(w, h, false); cam.aspect = w / h;
+  if (small()) { cam.fov = 46; cam.position.set(0, -.2, 11.5); g.position.set(.2, -.15, 0); g.scale.setScalar(.78); }
+  else { cam.fov = 34; cam.position.set(0, .3, 10); g.position.set(w / h > 1.9 ? 2.4 : 2.1, -.1, 0); g.scale.setScalar(1); }
+  cam.updateProjectionMatrix(); }
+size(); addEventListener('resize', size);
+
+const W = 4.4;
+const plane = map => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map, transparent: true, side: THREE.DoubleSide }));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .2 }))); return m; };
+const aspectOf = t => t && t.image && t.image.width ? t.image.width / t.image.height : 2.35;
+function fit() { state.layers?.forEach(o => { const a = aspectOf(o.mesh.material.map); o.mesh.scale.set(W * .62, W * .62 / a, 1); }); }
+state.shot = plane(tex('shot-dry')); g.add(state.shot);
+state.shot.children[0].material.color.set(0xc9d84f); state.shot.children[0].material.opacity = .7;
+const shotLbl = document.createElement('div'); shotLbl.className = 'lbl shot'; host.appendChild(shotLbl);
+state.layers = LAYERS.map((L, i) => { const o = { L, i, v: 0, on: true, lift: 0, fade: 1, flip: 0 };
+  o.mesh = plane(tex(src(L, L.vers[0]))); o.mesh.userData.o = o; g.add(o.mesh);
+  o.lbl = document.createElement('button'); o.lbl.className = 'lbl btn'; o.lbl.type = 'button'; host.appendChild(o.lbl);
+  o.lbl.addEventListener('pointerenter', () => state.hover = o); o.lbl.addEventListener('pointerleave', () => state.hover = null);
+  o.lbl.addEventListener('click', e => { e.stopPropagation(); openMenu(o, e); }); return o; });
+fit();
+
+const res = document.getElementById('res');
+function result() {
+  const on = state.layers.filter(o => o.on && o.L.vers[0]);
+  const count = {}; on.forEach(o => { const l = o.L.vers[o.v]; count[l] = (count[l] || 0) + 1; });
+  const placeL = state.layers[0], top = Object.entries(count).sort((a, b) => b[1] - a[1])[0];
+  const look = placeL.on ? placeL.L.vers[placeL.v] : (top ? top[0] : 'dry');
+  const all = Object.keys(count).length === 1 && state.layers.every(o => o.on);
+  const m = state.shot.material; if (m.map !== tex('shot-' + look)) { m.map = tex('shot-' + look); m.needsUpdate = true; state.shotPulse = 1; }
+  const removed = state.layers.filter(o => !o.on).map(o => o.L.label.toLowerCase());
+  res.innerHTML = all
+    ? `<b>${SHOTNAME[look]}</b><span class="tag real">real shot from the film</span><br>Every layer matches “${LOOKNAME[look]}”.`
+    : `<b>Your mix</b><span class="tag new">new shot</span><br>Closest real shot: ${SHOTNAME[look]}${removed.length ? ` · without the ${removed.join(', ')}` : ''}.<br>In the Room, this mix becomes a new shot.`;
+  shotLbl.innerHTML = `<i>→</i>Finished shot<em>${all ? 'from the film' : 'your mix'}</em>`;
+}
+result();
+
+// input
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+const pick = e => { const b = cv.getBoundingClientRect(); ptr.set((e.clientX - b.left) / b.width * 2 - 1, -(e.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(ptr, cam);
+  const hit = ray.intersectObjects(state.layers.filter(o => o.on || o.fade > .3).map(o => o.mesh), false)[0]; return hit ? hit.object.userData.o : null; };
+let down = null, moved = 0;
+cv.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch' }; moved = 0; if (!down.touch) cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove', e => {
+  if (down) { const dx = e.clientX - down.x, dy = e.clientY - down.y; moved += Math.abs(dx) + Math.abs(dy);
+    state.tRotY += dx * .006; if (!down.touch) state.tRotX = Math.max(-.5, Math.min(.6, state.tRotX + dy * .004));
+    down.x = e.clientX; down.y = e.clientY; cv.classList.add('grab'); return; }
+  state.hover = pick(e); cv.classList.toggle('hot', !!state.hover); });
+const up = e => { cv.classList.remove('grab'); const click = down && moved < 8; down = null; if (!click) return; const o = pick(e); if (o) openMenu(o, e); else closeMenu(); };
+cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { down = null; cv.classList.remove('grab'); });
+cv.addEventListener('wheel', e => { if (e.ctrlKey) return; if ((state.apartT >= 1 && e.deltaY > 0) || (state.apartT <= 0 && e.deltaY < 0)) return;
+  e.preventDefault(); state.apartT = Math.max(0, Math.min(1, state.apartT + e.deltaY * .0015)); syncPull(); closeMenu(); }, { passive: false });
+const pullB = document.getElementById('pull');
+const syncPull = () => pullB.textContent = state.apartT > .5 ? 'Put together' : 'Pull apart';
+pullB.onclick = () => { state.apartT = state.apartT > .5 ? 0 : 1; syncPull(); closeMenu(); };
+document.getElementById('reset').onclick = () => { state.layers.forEach(o => { o.on = true; o.v = 0; o.mesh.material.map = tex(src(o.L, o.L.vers[0])); }); fit();
+  state.tRotY = -.42; state.tRotX = .05; state.apartT = 1; syncPull(); closeMenu(); result(); };
+
+const menu = document.getElementById('menu');
+function openMenu(o, e) { state.sel = o; const b = host.getBoundingClientRect();
+  if (small()) { menu.style.left = '50%'; menu.style.transform = 'translateX(-50%)'; menu.style.top = (b.height - 190) + 'px'; }
+  else { menu.style.transform = ''; menu.style.left = Math.max(8, Math.min(e.clientX - b.left + 12, b.width - 230)) + 'px'; menu.style.top = Math.max(60, e.clientY - b.top - 22) + 'px'; }
+  menu.classList.add('on');
+  menu.querySelector('[data-a=swap]').disabled = o.L.vers.length < 2;
+  menu.querySelector('[data-a=remove]').textContent = o.on ? 'Remove' : 'Put back'; }
+function closeMenu() { menu.classList.remove('on'); state.sel = null; }
+addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+menu.addEventListener('click', e => { const a = e.target.dataset.a, o = state.sel; if (!a || !o) return;
+  if (a === 'swap') { o.v = (o.v + 1) % o.L.vers.length; o.flip = 1; o.on = true; setTimeout(() => { o.mesh.material.map = tex(src(o.L, o.L.vers[o.v])); fit(); }, reduce ? 0 : 160); }
+  if (a === 'remove') o.on = !o.on;
+  if (a === 'keep') o.on = true;
+  menu.querySelector('[data-a=remove]').textContent = o.on ? 'Remove' : 'Put back';
+  if (a !== 'swap') closeMenu();
+  setTimeout(result, 170); });
+
+// render (pauses when the stage is off screen)
+let visible = true; new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) requestAnimationFrame(loop); }).observe(host);
+const v = new THREE.Vector3(), ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+const place = (el, obj, dx, dy) => { obj.getWorldPosition(v); v.x += dx; v.y += dy; v.project(cam);
+  el.style.left = ((v.x + 1) / 2 * host.clientWidth) + 'px'; el.style.top = ((1 - v.y) / 2 * host.clientHeight) + 'px'; };
+function loop(t) {
+  if (!visible) return;
+  const sp = reduce ? 1 : .08;
+  state.apart += (state.apartT - state.apart) * sp; const k = ease(state.apart);
+  state.rotY += (state.tRotY * k - state.rotY) * (reduce ? 1 : .1); state.rotX += (state.tRotX - state.rotX) * (reduce ? 1 : .1);
+  g.rotation.set(state.rotX * k, state.rotY + (reduce ? 0 : Math.sin(t / 2600) * .03), 0);
+  const n = state.layers.length, sc = g.scale.x;
+  state.layers.forEach(o => { const j = n - o.i; o.lift += ((state.hover === o || state.sel === o ? 1 : 0) - o.lift) * .15;
+    o.fade += ((o.on ? 1 : 0) - o.fade) * .12; o.flip *= reduce ? 0 : .86;
+    o.mesh.position.set(k * (.62 * j - 1.75) - o.lift * .15 * k, k * (.52 * j - .25) + o.lift * .18 * k - (1 - o.fade) * .5, -k * 1.15 * j - (1 - o.fade) * 1.5);
+    o.mesh.rotation.y = o.flip * Math.PI; o.mesh.material.opacity = (.12 + .86 * k) * (.08 + .92 * o.fade);
+    const edge = o.mesh.children[0].material; edge.opacity = state.sel === o ? .95 : .2 + o.lift * .5; edge.color.set(state.sel === o || o.lift > .5 ? 0xc9d84f : 0xffffff);
+    o.lbl.innerHTML = `<i>${o.L.num}</i>${o.L.label}<em>${o.L.vers[o.v] ? LOOKNAME[o.L.vers[o.v]] : '—'}</em>`; o.lbl.classList.toggle('off', !o.on);
+    o.lbl.style.opacity = k > .35 ? 1 : 0; o.lbl.style.pointerEvents = k > .35 ? 'auto' : 'none';
+    place(o.lbl, o.mesh, -W * .31 * sc, (W * .31 / 2.35 + .12) * sc); });
+  state.shotPulse *= .9;
+  state.shot.position.set(-k * .55, -k * 1.2, k * 1.2); const s = 1 - .2 * k + state.shotPulse * .04, a = aspectOf(state.shot.material.map);
+  state.shot.scale.set(W * s, W * s / a, 1);
+  place(shotLbl, state.shot, -state.shot.scale.x / 2 * sc, (state.shot.scale.y / 2 + .14) * sc);
+  r.render(scene, cam); requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
