@@ -107,7 +107,7 @@ const LAYERS = [
   { key: 'place',    label: 'Place',     num: '01', vers: LOOKS },
   { key: 'creature', label: 'Creature',  num: '02', vers: LOOKS },
   { key: 'her',      label: 'Character', num: '03', vers: LOOKS },
-  { key: 'props',    label: 'Props',     num: '04', vers: [null] },
+  { key: 'props',    label: 'Props',     num: '04', vers: LOOKS },
 ];
 const host = document.getElementById('S');
 const small = () => host.clientWidth < 760;
@@ -118,7 +118,7 @@ const loader = new THREE.TextureLoader(), cache = {};
 const tex = n => cache[n] || (cache[n] = (() => { const t = loader.load(A + n + '.jpg', () => fit()); t.colorSpace = THREE.SRGBColorSpace; return t; })());
 const src = (L, v) => v ? `${L.key}-${v}` : L.key;
 LAYERS.forEach(L => tex(src(L, L.vers[0]))); tex('shot-dry');
-const warm = () => { LAYERS.forEach(L => L.vers.forEach(v => tex(src(L, v)))); LOOKS.forEach(l => tex('shot-' + l)); };
+const warm = () => { LAYERS.forEach(L => L.vers.forEach(v => tex(src(L, v)))); LOOKS.forEach(l => tex('shot-' + l)); ['place','creature','her'].forEach(k => ['chase','storm','dawn'].forEach(l => tex(`mix-${k}-${l}`))); };
 setTimeout(warm, 900);
 
 const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setClearColor(0x0b0b0c);
@@ -147,18 +147,24 @@ state.layers = LAYERS.map((L, i) => { const o = { L, i, v: 0, on: true, lift: 0,
 fit();
 
 const res = document.getElementById('res');
+const MIX = new Set(['place-chase','place-storm','place-dawn','creature-chase','creature-storm','creature-dawn','her-chase','her-storm','her-dawn']);
+const LAYERNAME = { place: 'Place', creature: 'Creature', her: 'Character', props: 'Props' };
 function result() {
-  const on = state.layers.filter(o => o.on && o.L.vers[0]);
-  const count = {}; on.forEach(o => { const l = o.L.vers[o.v]; count[l] = (count[l] || 0) + 1; });
-  const placeL = state.layers[0], top = Object.entries(count).sort((a, b) => b[1] - a[1])[0];
-  const look = placeL.on ? placeL.L.vers[placeL.v] : (top ? top[0] : 'dry');
-  const all = Object.keys(count).length === 1 && state.layers.every(o => o.on);
-  const m = state.shot.material; if (m.map !== tex('shot-' + look)) { m.map = tex('shot-' + look); m.needsUpdate = true; state.shotPulse = 1; }
-  const removed = state.layers.filter(o => !o.on).map(o => o.L.label.toLowerCase());
-  res.innerHTML = all
-    ? `<b>${SHOTNAME[look]}</b><span class="tag real">real shot from the film</span><br>Every layer matches “${LOOKNAME[look]}”.`
-    : `<b>Your mix</b><span class="tag new">new shot</span><br>Closest real shot: ${SHOTNAME[look]}${removed.length ? ` · without the ${removed.join(', ')}` : ''}.<br>In the Room, this mix becomes a new shot.`;
-  shotLbl.innerHTML = `<i>→</i>Finished shot<em>${all ? 'from the film' : 'your mix'}</em>`;
+  const L = state.layers, look = o => o.L.vers[o.v];
+  const allOn = L.every(o => o.on), looks = L.map(look), same = allOn && looks.every(x => x === looks[0]);
+  const changed = L.filter(o => look(o) !== 'dry');
+  const placeL = L[0], base = placeL.on ? look(placeL) : 'dry';
+  let img, html, real = false;
+  if (same) { img = 'shot-' + looks[0]; real = true;
+    html = `<b>${SHOTNAME[looks[0]]}</b><span class="tag real">real shot from the film</span><br>Every layer matches “${LOOKNAME[looks[0]]}”.`; }
+  else if (allOn && changed.length === 1 && MIX.has(changed[0].L.key + '-' + look(changed[0]))) { const o = changed[0];
+    img = `mix-${o.L.key}-${look(o)}`;
+    html = `<b>Your mix</b><span class="tag new">new shot</span><br>${LAYERNAME[o.L.key]} swapped to “${LOOKNAME[look(o)]}”, everything else kept.`; }
+  else { img = 'shot-' + base; const removed = L.filter(o => !o.on).map(o => o.L.label.toLowerCase());
+    html = `<b>Your mix</b><span class="tag new">new shot</span><br>Closest real shot: ${SHOTNAME[base]}${removed.length ? ` · without the ${removed.join(', ')}` : ''}.<br>In the Room, this mix becomes a new shot.`; }
+  const m = state.shot.material; if (m.map !== tex(img)) { m.map = tex(img); m.needsUpdate = true; state.shotPulse = 1; }
+  res.innerHTML = html;
+  shotLbl.innerHTML = `<i>→</i>Finished shot<em>${real ? 'from the film' : 'your mix'}</em>`;
 }
 result();
 
