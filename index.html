@@ -157,21 +157,50 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .topnav .pill{border:1px solid var(--volt);color:var(--volt);border-radius:999px;padding:8px 16px;font-weight:600}
 .legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
 @media (max-width:760px){.topnav{padding:14px 16px;gap:14px}.topnav .hide-sm{display:none}}
+/* v7 — Danney's notes 2026-11-13: one-line step label above the title, rail on the left, wires from a source, hover on rule rows, no dead space */
+.sh{grid-template-columns:1fr auto;column-gap:22px;row-gap:0;align-items:end;padding-right:0;margin-bottom:22px}
+.sh .no{grid-column:1/-1;font:700 12px var(--mono);letter-spacing:.18em;color:var(--volt);margin:0 0 10px}.sh .no::before{content:"STEP "}
+.step{min-height:0;padding-top:64px;padding-bottom:64px}.looks{margin-top:0}.sb{flex:none}.wipe{flex:none;aspect-ratio:2.3/1;min-height:0}
+.rail{left:16px;right:auto}.rail a{justify-content:flex-start}.rail a span{left:18px;right:auto}
+.lines{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}.lines path{fill:none;stroke-width:1.5;opacity:.7}
+.srcs button em{font-style:normal;color:var(--dim);margin-left:7px;font-weight:400}
+.rrow .w em.b{display:none}.rrow:hover .w em.a,.rrow.on .w em.a{display:none}.rrow:hover .w em.b,.rrow.on .w em.b{display:inline}
+.rrow:hover .ours{opacity:1;filter:none}.rrow:hover .theirs{opacity:.45}.rrow:hover .arrow{color:var(--volt)}
+.allbtn{border-color:var(--volt);color:var(--volt)}.allbtn:hover{background:var(--volt);color:#0b0b0c}
+.taphint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(20,20,18,.9);border:1px solid var(--volt);color:var(--volt);border-radius:99px;padding:6px 14px;font:600 12px Inter,system-ui,sans-serif}
+@media (max-width:760px){.sh{grid-template-columns:1fr}.step{padding-top:40px;padding-bottom:30px}.wipe{aspect-ratio:auto}}
+/* v8 — direction A, "the film strip": a full-width playing frame on top, a film strip down the left as the step marker */
+.hero{position:relative;display:block;max-width:none;padding:0;min-height:0;height:min(82vh,52vw);margin:0 0 0 46px;overflow:hidden;background:#000}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.heroshade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,6,6,.82) 0%,rgba(6,6,6,.35) 46%,rgba(6,6,6,0) 70%),linear-gradient(0deg,rgba(11,11,12,1) 0%,rgba(11,11,12,0) 34%)}
+.herotext{position:absolute;left:calc(6vw - 46px);bottom:9%;max-width:640px}.herotext h1{font-size:clamp(44px,6.6vw,96px);margin:0 0 16px}.herotext p{font-size:18px;color:#d6d5cd;max-width:520px;margin:0 0 22px}
+.herotext .btn{display:inline-block;text-decoration:none}
+.herotag{position:absolute;left:calc(6vw - 46px);top:22px;display:flex;align-items:center;gap:8px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#e9e8e0;background:rgba(0,0,0,.55);padding:6px 10px;border-radius:6px}
+.herotag i{width:8px;height:8px;border-radius:50%;background:var(--volt);animation:blink 1.6s ease-in-out infinite}@keyframes blink{50%{opacity:.25}}
+.rail{left:0;top:0;bottom:0;right:auto;transform:none;width:46px;gap:9px;justify-content:center;align-items:center;background:#060606;border-right:1px solid #1c1c19;counter-reset:fr;z-index:45}
+.rail::before,.rail::after{content:"";position:absolute;top:0;bottom:0;width:5px;background:repeating-linear-gradient(0deg,#2a2a26 0 7px,transparent 7px 16px)}.rail::before{left:5px}.rail::after{right:5px}
+.rail a{counter-increment:fr;width:26px;height:20px;border-radius:3px;border:1px solid #3a3a34;background:#101010;display:grid;place-items:center;justify-content:center;font:700 9px var(--mono);letter-spacing:0;color:#77776f;z-index:1}
+.rail a::after{content:"0" counter(fr);width:auto;height:auto;border:0;border-radius:0;background:none!important}
+.rail a.on{border-color:var(--volt);background:#1b1f0c;color:var(--volt);box-shadow:0 0 14px rgba(201,216,79,.35)}.rail a:hover{border-color:var(--volt)}
+.rail a span{left:36px}
+.proto{margin-left:46px}.step,.topnav,.legal{margin-left:46px}.step.cut{margin-left:46px}
+@media (max-width:760px){.hero{margin:0;height:66vw}.herotext{left:16px;right:16px;bottom:8%}.herotext h1{font-size:34px;margin-bottom:8px}.herotext p{display:none}.herotext .btn{padding:8px 14px;font-size:13px}.herotag{left:16px;top:12px;font-size:9px}.proto,.step,.topnav,.legal,.step.cut{margin-left:0}}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head><body>
-<nav class="topnav"><a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a><a class="hide-sm" href="/real-estate/">Real estate</a><a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a><a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a></nav>
+<nav class="topnav"><a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a><a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a><a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a></nav>
 <nav class="rail" id="rail"></nav>
 
-<header class="hero">
-  <p class="kick">Under the hood</p>
-  <h1>Watch a film get made.</h1>
-  <p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p>
+<header class="hero" id="top">
+  <video id="herovid" src="assets/home/exploded/assets/film-b.mp4" poster="assets/home/img/K1.jpg" muted loop playsinline autoplay></video>
+  <div class="heroshade"></div>
+  <span class="herotag"><i></i>Now playing · Last Train, made here</span>
+  <div class="herotext"><h1>Watch a film<br>get made.</h1><p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
 </header>
 
 <section class="step" id="s1" data-n="Imagine">
-  <div class="sh"><div class="no">01</div><div><h2>Imagine: your saves, sorted.</h2><p>Everything you saved from Pinterest, Instagram and YouTube goes in as a mess. One click sorts it by what each picture is doing.</p></div><button class="btn" id="sortTop">Sort it</button></div>
-  <div class="stage" id="st1"><canvas></canvas><div class="srcs" id="srcs"></div><button id="sortbtn">Taste Map<small>▶ CLICK TO SORT</small></button><div class="tip" id="tip1"></div></div>
+  <div class="sh"><div class="no">01</div><div><h2>Imagine: your saves, sorted.</h2><p>Everything you save from Pinterest, YouTube and Instagram, plus your own files, goes in as a mess. Click the ring and it sorts by what each picture is doing. Hover a source to see which pictures came from it.</p></div><span></span></div>
+  <div class="stage" id="st1"><canvas></canvas><svg class="lines" id="lines"></svg><div class="srcs" id="srcs"></div><button id="sortbtn">Taste Map<small>▶ CLICK TO SORT</small></button><div class="tip" id="tip1"></div></div>
 </section>
 
 <section class="step cut" id="s2" data-n="Break it down">
@@ -181,7 +210,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 </section>
 
 <section class="step" id="s2b" data-n="Swap the rules">
-  <div class="sh"><div class="no">03</div><div><h2>Swap the rules: keep what works.</h2><p>The style comes down to five rules. Each row is their shot on the left and ours on the right. Click a row to bring ours in.</p></div><button class="btn ghost" id="flipAll">Flip all to ours</button></div>
+  <div class="sh"><div class="no">03</div><div><h2>Swap the rules: keep what works.</h2><p>The style comes down to five rules. Each row is their shot on the left and ours on the right. Hover a row to see ours; click to keep it in.</p></div><button class="btn ghost allbtn" id="flipAll">Swap in all five</button></div>
   <div id="st2"></div>
   <p class="rcount" id="rcount"></p>
   <p class="credit">Reference frames: KPop Demon Hunters (Sony Pictures Animation / Netflix), shown for analysis · Our film: Last Train, Reelix Studio · <a href="https://www.youtube.com/watch?v=dn5dKI5mVn4" target="_blank" rel="noopener">Watch the reference clip ↗</a></p>
@@ -228,7 +257,7 @@ async function heavy(THREE) {
 function makeStage(host, fov, frame) { const cv = host.querySelector('canvas'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, preserveDrawingBuffer: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(fov, 1, .1, 100), S = { host, R, scene, cam, onResize: () => {} };
   const resize = () => { const W = host.clientWidth, H = host.clientHeight; R.setSize(W, H, false); cam.aspect = W / H; S.onResize(W, H); cam.updateProjectionMatrix(); };
-  let vis = false, last = performance.now(); const loop = now => { if (!vis) return; const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt, now); R.render(scene, cam); requestAnimationFrame(loop); };
+  let vis = false, last = performance.now(); const loop = now => { if (!vis) return; const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt, now); R.render(scene, cam); S.after && S.after(); requestAnimationFrame(loop); };
   new IntersectionObserver(([e]) => { const was = vis; vis = e.isIntersecting; if (vis && !was) { last = performance.now(); resize(); requestAnimationFrame(loop); } }).observe(host);
   addEventListener('resize', resize); S.resize = resize;
   S.proj = v => { const p = v.clone().project(cam); return [(p.x + 1) / 2 * host.clientWidth, (1 - p.y) / 2 * host.clientHeight]; }; return S; }
@@ -236,7 +265,7 @@ const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colo
 
 /* ───────── 01 IMAGINE — the scatter → Taste Map piece from Reelix Imagine's home, ported as is ───────── */
 { const OPC = { differentiate: '#E95549', unify: '#5792E9', direct: '#DEB049', infer: '#BF66B4', transform: '#E38A5A', scale: '#86C46B', rhythm: '#4CC3C3', reveal: '#A3A9B5', immerse: '#55B7DE', disrupt: '#E36AAE' }, OPS = Object.keys(OPC);
-  const SRC = { pinterest: ['Pinterest', '#E60023'], instagram: ['Instagram', '#E1306C'], youtube: ['YouTube', '#FF0000'], upload: ['Your own files', '#9a9a9a'] };
+  const SRC = { pinterest: ['Pinterest', '#E60023'], youtube: ['YouTube', '#FF0000'], instagram: ['Instagram', '#E1306C'], upload: ['Your own files', '#9a9a9a'] }; let hoverBtn = null;
   const host = $('#st1'), cards = [], opLabels = {}; let T = +(Q.get('sorted') || 0), target = T, pulse = 0, hoverSrc = null, PORT = false; window.__im = () => ({ target, T });
   const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   const bez = (a, b, t) => { const u = 1 - t; return new THREE.Vector3(u * u * a.x + t * t * b.x, u * u * a.y + t * t * b.y, u * u * a.z + 2 * u * t * 1.2 + t * t * b.z); };
@@ -262,7 +291,7 @@ const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colo
   const core = new THREE.Mesh(new THREE.CircleGeometry(1.85, 64), new THREE.MeshBasicMaterial({ color: 0x1c2410, transparent: true, opacity: .55 })); core.position.z = -.05; scene.add(ring, ring2, core);
   const parts = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xc9d84f, size: .06, transparent: true, opacity: 0 })); scene.add(parts);
   const slotFor = (op, k) => { const gi = OPS.indexOf(op), col = gi % 5, row = Math.floor(gi / 5), gx = 4.4 + col * 2.55, gy = 2.3 - row * 4.5; return new THREE.Vector3(gx + (k % 4 - 1.5) * .58, gy + (1.5 - Math.floor(k / 4)) * .58, 0); };
-  fetch('assets/home/imagine/refs.json').then(r => r.json()).then(REFS => { const count = {}, geo = new THREE.PlaneGeometry(.54, .54), fgeo = new THREE.PlaneGeometry(.6, .6);
+  fetch('assets/home/imagine/refs.json').then(r => r.json()).then(REFS => { const bySrc = {}; REFS.forEach(r => bySrc[r.src] = (bySrc[r.src] || 0) + 1); drawChips(bySrc); const count = {}, geo = new THREE.PlaneGeometry(.54, .54), fgeo = new THREE.PlaneGeometry(.6, .6);
     const SZ = REFS.map(() => { const q = Math.random(); return 1.3 * (q < .06 ? 2.8 + Math.random() * .9 : q < .26 ? 1.25 + Math.random() * .5 : .38 + Math.random() * .36); });
     const order = REFS.map((_, i) => i).sort((a, b) => SZ[b] - SZ[a]), POS = [], placed = [];
     order.forEach(i => { const r = SZ[i] * .3; let best = null, bs = -1e9;
@@ -277,11 +306,14 @@ const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colo
       const rot = new THREE.Euler((Math.random() - .5) * .25, (Math.random() - .5) * .35, (Math.random() - .5) * (big ? .18 : .5));
       g.position.copy(a); g.rotation.copy(rot); g.userData = { r, a, b: slotFor(r.op, Math.min(k, 19)), rot, delay: Math.random() * .6, frame, pic, ph: Math.random() * 6.28, s: sz }; g.renderOrder = Math.round((a.z + 3) * 10); g.scale.setScalar(sz); scene.add(g); cards.push(g); });
     OPS.forEach((op, gi) => { const d = document.createElement('div'); d.className = 'lbl'; d.style.color = OPC[op]; d.style.opacity = 0; d.textContent = op; host.appendChild(d); opLabels[op] = { el: d, p: new THREE.Vector3(4.4 + gi % 5 * 2.55, 2.3 - Math.floor(gi / 5) * 4.5 + 1.42, 0), pp: new THREE.Vector3(4.4 + gi % 5 * 2.55 - 1.36, 2.3 - Math.floor(gi / 5) * 4.5, 0) }; }); });
-  const sb = $('#sortbtn'), top = $('#sortTop');
+  const sb = $('#sortbtn'), top = document.createElement('i');
   const run = () => { target = target > 0 ? 0 : 1; pulse = 1; sb.querySelector('small').textContent = target ? '↺ CLICK TO MESS IT UP' : '▶ CLICK TO SORT'; top.textContent = target ? 'Mess it up' : 'Sort it'; };
   sb.onclick = top.onclick = run; if (T) { sb.querySelector('small').textContent = '↺ CLICK TO MESS IT UP'; top.textContent = 'Mess it up'; }
-  $('#srcs').innerHTML = Object.entries(SRC).map(([k, [n, c]]) => `<button data-s="${k}" style="--c:${c}"><i></i>${n}</button>`).join('');
-  document.querySelectorAll('#srcs button').forEach(b => { b.onmouseenter = () => { hoverSrc = b.dataset.s; b.classList.add('on'); }; b.onmouseleave = () => { hoverSrc = null; b.classList.remove('on'); }; });
+  const drawChips = n => { $('#srcs').innerHTML = Object.entries(SRC).map(([k, [nm, c]]) => `<button data-s="${k}" style="--c:${c}"><i></i>${nm}<em>${n[k] || 0}</em></button>`).join('');
+    document.querySelectorAll('#srcs button').forEach(b => { b.onmouseenter = () => { hoverSrc = b.dataset.s; hoverBtn = b; b.classList.add('on'); }; b.onmouseleave = () => { hoverSrc = hoverBtn = null; b.classList.remove('on'); $('#lines').innerHTML = ''; }; }); };
+  drawChips({}); const wires = () => { if (!hoverBtn) return; const W = host.getBoundingClientRect(), B = hoverBtn.getBoundingClientRect(), x0 = B.left - W.left + B.width / 2, y0 = B.bottom - W.top, col = SRC[hoverSrc][1], v = new THREE.Vector3(); let h = `<circle cx="${x0}" cy="${y0}" r="4" fill="${col}"/>`;
+    cards.forEach(g => { if (g.userData.r.src !== hoverSrc) return; g.getWorldPosition(v); const [x, y] = S.proj(v); h += `<path d="M${x0} ${y0} C${x0} ${(y0 + y) / 2} ${x} ${(y0 + y) / 2 - 20} ${x} ${y}" stroke="${col}"/><circle cx="${x}" cy="${y}" r="2.5" fill="${col}"/>`; });
+    $('#lines').setAttribute('viewBox', `0 0 ${W.width} ${W.height}`); $('#lines').innerHTML = h; }; S.after = wires; window.__wires = () => $('#lines').querySelectorAll('path').length;
   const ray = new THREE.Raycaster(), m = new THREE.Vector2(), tip = $('#tip1');
   host.addEventListener('mousemove', ev => { const b = host.getBoundingClientRect(); m.set((ev.clientX - b.left) / b.width * 2 - 1, -(ev.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(m, cam);
     const h = ray.intersectObjects(cards.map(g => g.userData.pic))[0]; if (!h) return tip.style.display = 'none'; const r = cards.find(g => g.userData.pic === h.object).userData.r, s = SRC[r.src] || SRC.upload;
@@ -311,8 +343,8 @@ const RULES = [['One swing, one streak', 'ref1', 'K14', 'Her blade swing is one 
 // the reference film's footage and stills stay on the dev machine; the public site shows where to find each moment instead
 const REFOK = !Q.has('public') && !window.REELIX_PUBLIC, theirs = i => REFOK ? `<img src="${REF}${RULES[i][1]}.jpg" alt="" loading="lazy">` : `<span class="reftile"><b>${RULES[i][4]}</b>in the reference clip</span>`;
 function rows() { const on = new Set(Array.from({ length: +(Q.get('f') || 0) }, (_, i) => i)), box = $('#st2');
-  const draw = () => { box.innerHTML = '<div class="rrows">' + RULES.map(([n, a, b, d], i) => `<button class="rrow ${on.has(i) ? 'on' : ''}" data-i="${i}"><span class="n">0${i + 1}</span><span class="w"><b>${n}</b><em>${on.has(i) ? d : 'Click to bring ours in.'}</em></span><span class="pic theirs">${theirs(i)}<i>theirs</i></span><span class="arrow">→</span><span class="pic ours"><img src="assets/home/img/${b}.jpg" alt="" loading="lazy"><i>ours</i></span></button>`).join('') + '</div>';
-    $('#rcount').innerHTML = `<b>${on.size} of 5</b> rules swapped in.${on.size === 5 ? ' All five are now ours.' : ''}`; $('#flipAll').textContent = on.size === 5 ? 'Back to the reference' : 'Flip all to ours'; };
+  const draw = () => { box.innerHTML = '<div class="rrows">' + RULES.map(([n, a, b, d], i) => `<button class="rrow ${on.has(i) ? 'on' : ''}" data-i="${i}"><span class="n">0${i + 1}</span><span class="w"><b>${n}</b><em class="a">Hover to see ours.</em><em class="b">${d}</em></span><span class="pic theirs">${theirs(i)}<i>theirs</i></span><span class="arrow">→</span><span class="pic ours"><img src="assets/home/img/${b}.jpg" alt="" loading="lazy"><i>ours</i></span></button>`).join('') + '</div>';
+    $('#rcount').innerHTML = `<b>${on.size} of 5</b> rules swapped in.${on.size === 5 ? ' All five are now ours.' : ''}`; $('#flipAll').textContent = on.size === 5 ? 'Back to theirs' : 'Swap in all five'; };
   box.onclick = e => { const r = e.target.closest('.rrow'); if (!r) return; const i = +r.dataset.i; on.has(i) ? on.delete(i) : on.add(i); draw(); };
   $('#flipAll').onclick = () => { const to = on.size < 5; RULES.forEach((_, i) => to ? on.add(i) : on.delete(i)); draw(); }; draw(); }
 
@@ -320,7 +352,8 @@ function rows() { const on = new Set(Array.from({ length: +(Q.get('f') || 0) }, 
 function lite() {
   // 01: two stills of the desktop piece, tap to swap
   const st1 = $('#st1'); st1.innerHTML = '<img src="assets/home/lite/imagine-messy.jpg" alt="Saved pictures in a mess"><img class="b" src="assets/home/lite/imagine-sorted.jpg" alt="The same pictures sorted into the Taste Map" loading="lazy">';
-  const t1 = () => { const on = st1.classList.toggle('sorted'); $('#sortTop').textContent = on ? 'Mess it up' : 'Sort it'; }; st1.onclick = $('#sortTop').onclick = t1;
+  st1.insertAdjacentHTML('beforeend', '<span class="taphint" id="taphint">Tap to sort</span>'); st1.onclick = () => { $('#taphint').textContent = st1.classList.toggle('sorted') ? 'Tap to mess it up' : 'Tap to sort'; };
+  $('#s1 .sh p').textContent = 'Everything you save from Pinterest, YouTube and Instagram, plus your own files, goes in as a mess. One tap sorts it by what each picture is doing.';
   // 02: a short muted clip of the layers opening and closing; plays only while on screen
   $('#cut').innerHTML = '<video id="cutvid" src="assets/home/lite/cut.mp4" poster="assets/home/lite/cut-poster.jpg" muted loop playsinline preload="none"></video><ol class="cutsteps"><li>The reference, whole</li><li>It opens into parts</li><li>Our story, our look and our rule go in</li><li>It closes as Last Train</li></ol>';
   const cv = $('#cutvid'); new IntersectionObserver(([e]) => e.isIntersecting ? cv.play().catch(() => {}) : cv.pause(), { threshold: .35 }).observe(cv);
@@ -328,11 +361,11 @@ function lite() {
   // 03: five cards to swipe, tap one to flip theirs → ours
   const R = RULES;
   const st2 = $('#st2'); st2.innerHTML = '<div class="rcards">' + R.map(([n, a, b, d], i) => `<button class="rcard" data-i="${i}"><span class="who">theirs · reference</span><span class="shot">${theirs(i)}</span><b>0${i + 1} ${n}</b><em>Tap to swap in ours</em></button>`).join('') + '</div>'; $('#rcount').textContent = '0 of 5 rules swapped in. Swipe for more.';
-  const cards = [...st2.querySelectorAll('.rcard')], count = () => { const k = cards.filter(c => c.classList.contains('ours')).length; $('#rcount').textContent = `${k} of 5 rules swapped in.${k === 5 ? ' All five are now ours.' : ' Swipe for more.'}`; $('#flipAll').textContent = k === 5 ? 'Back to the reference' : 'Flip all to ours'; };
+  const cards = [...st2.querySelectorAll('.rcard')], count = () => { const k = cards.filter(c => c.classList.contains('ours')).length; $('#rcount').textContent = `${k} of 5 rules swapped in.${k === 5 ? ' All five are now ours.' : ' Swipe for more.'}`; $('#flipAll').textContent = k === 5 ? 'Back to theirs' : 'Swap in all five'; };
   const set = (c, o) => { c.classList.toggle('ours', o); c.querySelector('.shot').innerHTML = o ? `<img src="assets/home/img/${R[c.dataset.i][2]}.jpg" alt="">` : theirs(+c.dataset.i); c.querySelector('.who').textContent = o ? 'ours · Last Train' : 'theirs · reference'; c.querySelector('em').textContent = o ? R[c.dataset.i][3] : 'Tap to swap in ours'; };
   cards.forEach(c => c.onclick = () => { set(c, !c.classList.contains('ours')); count(); }); $('#flipAll').onclick = () => { const to = cards.some(c => !c.classList.contains('ours')); cards.forEach(c => set(c, to)); count(); };
   $('#s2b .sh p').textContent = 'The style comes down to five rules. Tap a card to swap that rule for our own version of it.';
-  $('.hero p').textContent = 'Scroll down. Every step below is the real thing from our last film, and every one of them is something you can tap.'; $('#pline').textContent = 'Tap a board to pick it.';
+   $('#pline').textContent = 'Tap a board to pick it.';
   // 06: the shot just plays
   $('#s5 .sh p').textContent = 'Each approved frame goes to the video model with its sheets, and comes back moving.';
 }
