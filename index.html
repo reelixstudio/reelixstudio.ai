@@ -185,6 +185,14 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .rail a span{left:36px}
 .proto{margin-left:46px}.step,.topnav,.legal{margin-left:46px}.step.cut{margin-left:46px}
 @media (max-width:760px){.hero{margin:0;height:66vw}.herotext{left:16px;right:16px;bottom:8%}.herotext h1{font-size:34px;margin-bottom:8px}.herotext p{display:none}.herotext .btn{padding:8px 14px;font-size:13px}.herotag{left:16px;top:12px;font-size:9px}.proto,.step,.topnav,.legal,.step.cut{margin-left:0}}
+/* v9 — one left edge for everything (Danney: "things need to be in line") */
+.herotext,.herotag{left:6vw}.ec-brand{display:none}
+.credit,.rcount,.picked-line{text-align:left}.step.cut .credit{padding-left:6vw!important}
+.topnav{padding-left:6vw;padding-right:6vw}
+@media (max-width:760px){.herotext,.herotag{left:16px}.step.cut .credit{padding-left:16px!important}}
+.ytwrap{position:absolute;overflow:hidden;background:#000;z-index:2;transition:opacity .15s}
+.ytwrap iframe{position:absolute;left:-4.5%;top:50%;width:109%;aspect-ratio:16/9;transform:translateY(-50%);border:0}
+.ytwrap span{position:absolute;left:10px;top:9px;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#e9e8e0;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:5px;pointer-events:none}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head><body>
@@ -192,7 +200,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 <nav class="rail" id="rail"></nav>
 
 <header class="hero" id="top">
-  <video id="herovid" src="assets/home/exploded/assets/film-b.mp4" poster="assets/home/img/K1.jpg" muted loop playsinline autoplay></video>
+  <video id="herovid" src="assets/home/exploded/assets/film-b.mp4" poster="assets/home/img/big/K1.jpg" muted loop playsinline autoplay></video>
   <div class="heroshade"></div>
   <span class="herotag"><i></i>Now playing · Last Train, made here</span>
   <div class="herotext"><h1>Watch a film<br>get made.</h1><p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
@@ -224,14 +232,14 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 
 <section class="step s4" id="s4" data-n="Storyboard">
   <div class="sh"><div class="no">05</div><div><h2>Storyboard: 18 pictures, no video yet.</h2><p>Every shot is one still. You approve all of them first, so nothing gets animated that you haven't seen.</p></div><button class="btn ghost" id="sk">Show the first sketch</button></div>
-  <div class="sb"><div class="viewer"><img id="vimg" src="assets/home/img/K1.jpg" alt=""><span id="vno">Shot 1 of 18</span><p id="vnote"></p></div>
+  <div class="sb"><div class="viewer"><img id="vimg" src="assets/home/img/big/K1.jpg" alt=""><span id="vno">Shot 1 of 18</span><p id="vnote"></p></div>
     <div class="sbside"><div class="ctl"><button class="btn" id="play">▶ Play the board</button><input type="range" id="scrub" min="1" max="18" value="1" aria-label="Shot"></div><div class="board" id="board"></div></div></div><div class="sketch"><img src="assets/home/img/board-lasttrain.jpg" alt="First storyboard sketch"></div>
 </section>
 
 <section class="step" id="s5" data-n="Motion">
   <div class="sh"><div class="no">06</div><div><h2>Motion: the still starts to move.</h2><p>Each approved frame goes to the video model with its sheets. Drag the bar to see the frame on one side and the moving shot on the other.</p></div><span></span></div>
   <div class="tabs" id="mtabs"><button class="on" data-k="K1">Shot 1</button><button data-k="K2">Shot 2</button></div>
-  <div class="wipe" id="wipe"><video id="wvid" src="assets/home/img/K1.mp4" muted loop playsinline autoplay></video><img src="assets/home/img/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
+  <div class="wipe" id="wipe"><video id="wvid" src="assets/home/img/K1.mp4" muted loop playsinline autoplay></video><img src="assets/home/img/big/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
 </section>
 
 <section class="step room" id="s6" data-n="The Room">
@@ -322,8 +330,7 @@ const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colo
 
 /* ───────── 02 BREAK IT DOWN — the "exploded cut" engine from the old Studio landing page, fed with this film ───────── */
 { const CUT = { brand: 'THE EXPLODED CUT', subBrand: 'ONE VIDEO, TAKEN APART AND REBUILT', hint: 'Keep scrolling — the video comes apart', scrollLength: 7,
-    filmA: { src: REFOK ? 'assets/home/exploded/assets/local/film-a.mp4' : 'data:video/mp4,', label: 'THE REFERENCE · KPOP DEMON HUNTERS', recipe: { title: 'KPOP DEMON HUNTERS (2025)', sub: 'Sony Pictures Animation · Netflix · 3D animation',
-      stats: ['one swing, one streak of light', 'the hit floods the whole frame', 'one colour per scene', 'fast burst, then hold on a face'], note: 'We keep the recipe, never the footage.' } },
+    filmA: { src: REFOK ? 'assets/home/exploded/assets/local/film-a.mp4' : 'data:video/mp4,', label: 'THE REFERENCE · KPOP DEMON HUNTERS', recipe: { plain: true, title: 'THE REFERENCE VIDEO', sub: 'KPop Demon Hunters · plays from YouTube' } },
     filmB: { src: 'assets/home/exploded/assets/film-b.mp4', label: 'LAST TRAIN · OURS, 2026' },
     finale: { headline: 'Same parts. Our film.', tagline: 'The reference came apart into five parts. A new story, a new look and one hard rule went in. Last Train came out.', cta: { text: 'See the rules we swapped ↓', href: '#s2b' } },
     layers: [
@@ -334,7 +341,14 @@ const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colo
       { id: 'story', part: 'PART 05', name: 'STORY', type: 'story', text: 'A pop group secretly fights demons between their shows.', swap: { text: 'On the last subway home, a shadow moves one seat closer at every stop.', note: 'SWAPPED' } },
       { id: 'rule', part: 'PART 06', name: 'OUR RULE', type: 'story', addIn: true, swap: { text: 'No words at all. One main character. Exactly 120 seconds.', note: 'NEW PART' } } ],
     timeline: { explodeStart: .08, explodeEnd: .28, swaps: [{ layer: 'story', at: .32, span: .11 }, { layer: 'rule', at: .47, span: .11 }, { layer: 'style', at: .61, span: .11 }], recompressStart: .74, recompressEnd: .93, footageCross: [.79, .92] } };
-  import('./assets/home/exploded/exploded-cut.js').then(({ ExplodedCut }) => { window.__cut = new ExplodedCut($('#cut'), CUT); }).catch(e => console.error('exploded cut failed', e)); }
+  import('./assets/home/exploded/exploded-cut.js').then(({ ExplodedCut }) => { const cut = window.__cut = new ExplodedCut($('#cut'), CUT); if (REFOK) return;
+    // public site: the original plays from YouTube's own player, sitting exactly on the film frame until the layers start to open
+    const st = $('#cut .ec-sticky'), w = document.createElement('div'); w.className = 'ytwrap'; w.innerHTML = '<span>The original · playing from YouTube</span>'; st.appendChild(w); let loaded = false;
+    new IntersectionObserver(([e]) => { if (e.isIntersecting && !loaded) { loaded = true; w.insertAdjacentHTML('afterbegin', '<iframe title="The reference clip" allow="autoplay; encrypted-media; picture-in-picture" src="https://www.youtube-nocookie.com/embed/dn5dKI5mVn4?start=58&end=69&autoplay=1&mute=1&loop=1&playlist=dn5dKI5mVn4&controls=0&playsinline=1&rel=0&modestbranding=1"></iframe>'); } }, { rootMargin: '400px' }).observe(st);
+    const L = cut.layers.find(l => l.cfg.type === 'video'), v = new THREE.Vector3(), place = () => { requestAnimationFrame(place); const o = 1 - Math.max(0, Math.min(1, (cut.progress - .02) / .05)); w.style.opacity = o; w.style.visibility = o < .02 ? 'hidden' : 'visible'; if (o < .02) return;
+      const g = L.meshA.geometry.parameters, B = cut.renderer.domElement.getBoundingClientRect(), S = st.getBoundingClientRect(), xs = [], ys = [];
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b]) => { v.set(a * g.width / 2, b * g.height / 2, 0); L.meshA.localToWorld(v); v.project(cut.camera); xs.push((v.x + 1) / 2 * B.width + B.left - S.left); ys.push((1 - v.y) / 2 * B.height + B.top - S.top); });
+      const x0 = Math.min(...xs), y0 = Math.min(...ys); w.style.left = x0 + 'px'; w.style.top = y0 + 'px'; w.style.width = Math.max(...xs) - x0 + 'px'; w.style.height = Math.max(...ys) - y0 + 'px'; }; place(); }).catch(e => console.error('exploded cut failed', e)); }
 
 }
 
@@ -383,7 +397,7 @@ if (LITE) lite(); else { rows(); heavy(await import('three')); }
 { const NOTE = ['She spins her umbrella like a sword.', 'A couple passes. She glances over.', 'They walk off. A shadow slides along the wall.', 'A shoulder bump knocks one earbud out.', 'The earbud lands on the track. One eye opens.', 'A claw snatches it as the train pulls in.', 'It lunges at the lens. Ink floods the frame.', 'It boards. She pulls her hood up.', 'The phones glitch. Nobody looks up.', 'She sees it in the glass and grips the umbrella.', 'It prowls closer. She walks away, calm.', 'Through the door into an empty car. It follows.', 'The handle becomes a hilt. The blade comes out.', 'They fight. It never strikes back.', 'Its fist opens toward her.', 'In the tunnel she shields it. The earbud is in its palm.', 'It takes the bench, one eye open.', 'Hood down, hair loose.'];
   $('#board').innerHTML = NOTE.map((_, i) => `<figure data-i="${i + 1}"><img loading="lazy" src="assets/home/img/K${i + 1}.jpg" alt="Shot ${i + 1}"><figcaption>${i + 1}</figcaption></figure>`).join('');
   let cur = 1, timer = null; const figs = [...document.querySelectorAll('#board figure')];
-  const show = n => { cur = n; $('#vimg').src = `assets/home/img/K${n}.jpg`; $('#vno').textContent = `Shot ${n} of 18`; $('#vnote').textContent = NOTE[n - 1]; $('#scrub').value = n; figs.forEach(f => f.classList.toggle('on', +f.dataset.i === n)); };
+  const show = n => { cur = n; $('#vimg').src = `assets/home/img/big/K${n}.jpg`; $('#vno').textContent = `Shot ${n} of 18`; $('#vnote').textContent = NOTE[n - 1]; $('#scrub').value = n; figs.forEach(f => f.classList.toggle('on', +f.dataset.i === n)); };
   const stop = () => { clearInterval(timer); timer = null; $('#play').textContent = '▶ Play the board'; };
   $('#play').onclick = () => { if (timer) return stop(); if (cur === 18) show(1); $('#play').textContent = '❚❚ Pause'; timer = setInterval(() => { if (cur === 18) return stop(); show(cur + 1); }, 900); };
   $('#board').onclick = e => { const f = e.target.closest('figure'); if (f) { stop(); show(+f.dataset.i); } }; $('#scrub').oninput = e => { stop(); show(+e.target.value); }; show(+(Q.get('shot') || 1));
@@ -393,7 +407,7 @@ if (LITE) lite(); else { rows(); heavy(await import('three')); }
 /* ───────── 05 MOTION — drag to wipe between the frame and the clip ───────── */
 { const w = $('#wipe'), still = $('#wstill'), bar = $('#wbar'); const set = x => { const b = w.getBoundingClientRect(), k = Math.max(.03, Math.min(.97, (x - b.left) / b.width)); still.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`; bar.style.left = k * 100 + '%'; };
   let drag = false; w.addEventListener('pointerdown', e => { drag = true; w.setPointerCapture(e.pointerId); set(e.clientX); }); w.addEventListener('pointermove', e => drag && set(e.clientX)); w.addEventListener('pointerup', () => drag = false);
-  document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/${t.dataset.k}.jpg`; $('#wvid').src = `assets/home/img/${t.dataset.k}.mp4`; $('#wvid').play().catch(() => {}); });
+  document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/big/${t.dataset.k}.jpg`; $('#wvid').src = `assets/home/img/${t.dataset.k}.mp4`; $('#wvid').play().catch(() => {}); });
   requestAnimationFrame(() => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); addEventListener('resize', () => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); }
 </script>
 </body></html>
