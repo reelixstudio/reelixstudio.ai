@@ -1,239 +1,366 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Reelix Studio</title>
-<meta name="description" content="Every film is a recipe. Reelix Studio breaks a video into its ingredients (characters, places, props, light) so you can keep what works, swap what doesn't, and make it yours.">
-<meta property="og:title" content="Reelix Studio · Every film is a recipe">
-<meta property="og:description" content="Pull a shot apart. Swap an ingredient. See what it becomes.">
-<meta property="og:image" content="https://reelixstudio.ai/assets/og.png">
-<meta property="og:url" content="https://reelixstudio.ai/">
-<meta name="theme-color" content="#0b0b0c">
-<link rel="icon" href="assets/favicon.png">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reelix Studio — watch a film get made</title>
+<meta name="description" content="Scroll through how Reelix Studio takes a video apart and builds a new film from it, one step at a time.">
+<link rel="icon" href="assets/logo.png">
+<script>window.REELIX_PUBLIC = 1</script>
 <style>
-  :root{ --bg:#0b0b0c; --ink:#f2f1ec; --dim:#8d8c86; --volt:#c9d84f; --amber:#e8b06a; --line:rgba(255,255,255,.14);
-         --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace; }
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; height:100%; overflow:hidden; background:var(--bg); color:var(--ink); font:15px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
-  a{ color:inherit; text-decoration:none; }
-  .stage{ position:relative; height:100vh; height:100svh; min-height:620px; overflow:hidden; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
-  .stage canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; }
-  .stage canvas.hot{ cursor:pointer; } .stage canvas.grab{ cursor:grabbing; }
-  .nav{ position:absolute; top:22px; left:28px; right:28px; display:flex; align-items:center; gap:22px; z-index:4; font-size:13px; color:var(--dim); }
-  .nav .brand{ display:flex; align-items:center; gap:9px; color:var(--ink); font-weight:600; margin-right:auto; font-size:14px; }
-  .nav .brand img{ width:22px; height:22px; border-radius:5px; }
-  .nav a:hover{ color:var(--ink); }
-  .pill{ display:inline-block; color:#0b0b0c !important; background:var(--volt); padding:9px 15px; border-radius:999px; font-weight:600; font-size:13px; }
-  .pill:hover{ filter:brightness(1.08); }
-  .copy{ position:absolute; z-index:3; left:56px; top:clamp(96px,16vh,150px); max-width:390px; pointer-events:none; }
-  .copy h1{ font-size:clamp(34px,4.2vw,48px); line-height:1.04; letter-spacing:-.02em; margin:0 0 14px; font-weight:600; }
-  .copy p{ color:var(--dim); margin:0; font-size:16px; }
-  .hint{ position:absolute; z-index:3; left:56px; top:calc(clamp(96px,16vh,150px) + 180px); margin:0; padding:0; list-style:none; counter-reset:h; display:grid; gap:10px; font-size:13px; color:var(--dim); pointer-events:none; max-width:330px; }
-  .hint li{ counter-increment:h; display:flex; gap:10px; } .hint li::before{ content:"0" counter(h); font:600 11px/1.6 var(--mono); color:var(--volt); }
-  .hint b{ color:var(--ink); font-weight:600; }
-  .lbl{ position:absolute; z-index:2; transform:translate(0,-50%); font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--ink);
-        background:rgba(11,11,12,.8); padding:6px 9px; border-radius:4px; border:1px solid var(--line); white-space:nowrap; transition:opacity .2s, border-color .2s; }
-  .lbl i{ font-style:normal; color:var(--volt); margin-right:6px; } .lbl em{ font-style:normal; color:var(--dim); margin-left:6px; }
-  .lbl.btn{ cursor:pointer; } .lbl.btn:hover{ border-color:var(--volt); }
-  .lbl.off{ text-decoration:line-through; opacity:.5; } .lbl.shot{ pointer-events:none; }
-  .menu{ position:absolute; z-index:5; display:none; gap:6px; padding:6px; background:#151514; border:1px solid var(--line); border-radius:999px; box-shadow:0 10px 30px rgba(0,0,0,.5); }
-  .menu.on{ display:flex; }
-  .menu button{ all:unset; cursor:pointer; padding:8px 13px; border-radius:999px; font-size:12px; color:var(--ink); }
-  .menu button:hover{ background:#262624; } .menu button.go{ color:#0b0b0c; background:var(--volt); }
-  .menu button[disabled]{ opacity:.35; cursor:default; }
-  .result{ position:absolute; z-index:3; right:40px; bottom:34px; text-align:right; font-size:13px; color:var(--dim); max-width:520px; }
-  .result b{ color:var(--ink); font-weight:600; }
-  .tag{ display:inline-block; margin-left:8px; padding:3px 8px; border-radius:4px; font:600 10px/1.3 var(--mono); letter-spacing:.12em; text-transform:uppercase; vertical-align:1px; }
-  .tag.real{ background:rgba(201,216,79,.15); color:var(--volt); } .tag.new{ background:rgba(232,176,106,.18); color:var(--amber); }
-  .bar{ position:absolute; z-index:3; left:56px; bottom:34px; display:flex; gap:10px; align-items:center; }
-  .bar button{ all:unset; cursor:pointer; padding:9px 14px; border:1px solid var(--line); border-radius:999px; color:var(--ink); font-size:13px; }
-  .bar button:hover{ border-color:var(--volt); }
-  .bar .pill{ margin-left:6px; padding:10px 16px; font-size:14px; }
-
-  .how{ max-width:1100px; margin:0 auto; padding:96px 28px 72px; }
-  .how h2{ font-size:28px; letter-spacing:-.01em; margin:0 0 28px; font-weight:600; }
-  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-  .step{ border:1px solid var(--line); border-radius:12px; padding:22px; }
-  .step span{ font:600 11px/1 var(--mono); letter-spacing:.14em; color:var(--volt); }
-  .step h3{ margin:12px 0 6px; font-size:17px; font-weight:600; }
-  .step p{ margin:0; color:var(--dim); font-size:14px; }
-  .more{ margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; align-items:center; color:var(--dim); font-size:14px; }
-  .more a.link{ border-bottom:1px solid var(--line); } .more a.link:hover{ color:var(--ink); border-color:var(--ink); }
-  footer{ max-width:1100px; margin:0 auto; padding:24px 28px 48px; display:flex; gap:20px; flex-wrap:wrap; color:var(--dim); font-size:13px; border-top:1px solid var(--line); }
-  footer span{ margin-right:auto; }
-  footer a:hover{ color:var(--ink); }
-
-  .legal{ position:fixed; z-index:4; right:40px; bottom:10px; display:flex; gap:14px; font-size:11px; color:#5d5c57; }
-  .legal a:hover{ color:var(--ink); }
-  @media (max-width: 760px){
-    .legal{ right:16px; bottom:4px; }
-    .nav{ top:16px; left:16px; right:16px; gap:14px; } .nav .hide-sm{ display:none; }
-    .copy{ left:16px; right:16px; top:70px; max-width:none; }
-    .copy h1{ font-size:32px; margin-bottom:8px; } .copy p{ font-size:14px; }
-    .hint{ display:none; }
-    .result{ left:16px; right:16px; bottom:82px; text-align:left; max-width:none; font-size:12px; }
-    .bar{ left:16px; right:16px; bottom:22px; flex-wrap:wrap; }
-    .bar .pill{ margin-left:auto; }
-    .lbl{ font-size:9px; padding:4px 6px; } .lbl em{ display:none; }
-    .steps{ grid-template-columns:1fr; } .how{ padding:64px 16px 48px; } footer{ padding:20px 16px 40px; }
+:root{--bg:#0b0b0c;--ink:#f2f1ec;--dim:#8d8c86;--volt:#c9d84f;--amber:#e8b06a;--line:rgba(255,255,255,.14);--mono:ui-monospace,"JetBrains Mono",Menlo,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.proto{position:sticky;top:0;z-index:50;padding:6px 14px;background:repeating-linear-gradient(135deg,var(--amber) 0 14px,#c98f4e 14px 28px);color:#111;font:700 11px/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:10px}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;color:var(--dim);text-decoration:none;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.rail a::after{content:"";width:8px;height:8px;border-radius:50%;border:1px solid var(--dim)}.rail a span{opacity:0;transition:.2s}.rail a:hover span,.rail a.on span{opacity:1}
+.rail a.on{color:var(--volt)}.rail a.on::after{background:var(--volt);border-color:var(--volt)}
+.hero{min-height:62vh;display:flex;flex-direction:column;justify-content:center;padding:60px 6vw 20px;max-width:1100px}
+.kick{font:600 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--volt);margin:0 0 14px}
+h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:0 0 18px}
+.hero p{font-size:19px;color:#c4c3bb;max-width:620px;margin:0}
+.step{min-height:100vh;padding:70px 6vw 40px;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.sh{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:end;margin:0 0 20px;padding-right:90px}
+.sh .no{font:700 64px/0.9 Inter,system-ui,sans-serif;color:var(--volt);letter-spacing:-.04em}
+.sh h2{font-size:34px;line-height:1.1;letter-spacing:-.02em;margin:0 0 6px}.sh p{margin:0;color:#b9b8b0;font-size:16px;max-width:640px}
+.btn{background:var(--volt);color:#0b0b0c;border:0;border-radius:999px;padding:11px 20px;font:600 14px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.stage{position:relative;flex:1;min-height:520px;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 50% 55%,#12150b 0%,#0b0b0c 62%);border:1px solid var(--line)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.lbl{position:absolute;transform:translate(-50%,-50%);font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;pointer-events:none;transition:opacity .4s;color:#d8d7cf}
+.lbl em{display:block;font:400 12px Inter,system-ui,sans-serif;letter-spacing:0;text-transform:none;color:var(--dim)}.lbl.v{color:var(--volt)}.lbl.r{transform:translate(0,-50%);text-align:left}
+.say{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(20,20,18,.92);border:1px solid #33332c;border-radius:12px;padding:10px 16px;max-width:640px;font-size:14px;text-align:center;z-index:3}
+.say b{color:var(--volt)}
+.srcs{position:absolute;left:16px;top:14px;display:flex;gap:6px;z-index:3;flex-wrap:wrap}
+.srcs button{background:rgba(20,20,18,.8);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:6px 12px;font:600 12px Inter,system-ui,sans-serif;cursor:pointer}
+.srcs button i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:7px}.srcs button.on{border-color:var(--c)}
+#sortbtn{position:absolute;transform:translate(-50%,-50%);z-index:3;background:none;border:0;color:var(--ink);font:600 15px Inter,system-ui,sans-serif;cursor:pointer;text-align:center;width:150px}
+#sortbtn small{display:block;color:var(--volt);font:600 10px var(--mono);letter-spacing:.12em;margin-top:4px}
+.tip{position:absolute;display:none;z-index:4;background:#151513;border:1px solid #33332c;border-radius:8px;padding:8px 10px;font-size:12px;max-width:280px;pointer-events:none}
+.tip span{display:block;font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase}.tip b{display:block;font-weight:400;margin:3px 0}
+/* 03 concepts */
+.looks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;align-content:center}
+.look{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#131312;cursor:pointer;transition:transform .25s,border-color .25s,opacity .25s}
+.look img{display:block;width:100%}.look div{padding:14px 16px}.look b{font-size:18px}.look p{margin:4px 0 0;color:#b9b8b0;font-size:14px}
+.look:hover{transform:translateY(-6px)}.looks.picked .look:not(.on){opacity:.35}.look.on{border-color:var(--volt);transform:translateY(-6px)}
+.look .tag{display:none;float:right;background:var(--volt);color:#111;font:700 10px var(--mono);letter-spacing:.1em;padding:4px 8px;border-radius:5px}.look.on .tag{display:block}
+/* 04 storyboard */
+.board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;flex:1;align-content:center}
+.board figure{margin:0;position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--line);cursor:pointer;transition:transform .2s,border-color .2s}
+.board img{display:block;width:100%;aspect-ratio:2.35/1;object-fit:cover}
+.board figure:hover{transform:scale(1.35);z-index:2;border-color:var(--volt)}
+.board figcaption{position:absolute;left:6px;top:5px;font:700 10px var(--mono);color:#111;background:var(--volt);padding:2px 5px;border-radius:3px}
+.sketch{flex:1;display:none;align-items:center;justify-content:center}.sketch img{max-height:70vh;max-width:100%;border-radius:10px;border:1px solid var(--line)}
+.s4.first .board{display:none}.s4.first .sketch{display:flex}
+/* 05 motion */
+.wipe{position:relative;flex:1;min-height:420px;border-radius:14px;overflow:hidden;border:1px solid var(--line);cursor:ew-resize;background:#000;user-select:none}
+.wipe img,.wipe video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wipe .bar{position:absolute;top:0;bottom:0;width:3px;background:var(--volt);transform:translateX(-50%)}
+.wipe .bar::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--volt);color:#111;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700}
+.wipe .t{position:absolute;top:14px;font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;background:rgba(0,0,0,.6);padding:5px 9px;border-radius:6px}.wipe .t.l{left:14px}.wipe .t.rr{right:14px;color:var(--volt)}
+/* 06 room */
+.room{align-items:center;justify-content:center;text-align:center;min-height:80vh}
+.room h2{font-size:clamp(34px,5vw,60px);letter-spacing:-.03em;margin:0 0 12px}.room p{color:#b9b8b0;font-size:18px;margin:0 0 26px}
+.room .btn{font-size:18px;padding:16px 30px}
+.tree{display:flex;gap:10px;align-items:center;justify-content:center;margin:34px 0 0;flex-wrap:wrap;font-size:14px;color:#c4c3bb}
+.tree span{border:1px solid var(--line);border-radius:10px;padding:9px 14px}.tree span.v{border-color:var(--volt);color:var(--volt)}.tree i{color:var(--dim);font-style:normal}
+.credit{font-size:11px;color:#77776f;margin:10px 0 0;text-align:center}
+:root{--mut:#a3a29a;--check:#ff6b5e}
+  .ec-root{position:relative}
+  .ec-scroll{position:relative}
+  /* the dark stage — light pools where the film hovers, edges fall to black; no grid */
+  .ec-sticky{position:sticky;top:0;height:100vh;overflow:hidden;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 42%, rgba(212,255,61,.035), transparent 55%),
+      radial-gradient(ellipse 130% 100% at 50% 45%, #11130d 0%, #0c0d0a 52%, #060704 100%);
   }
-  @media (prefers-reduced-motion: reduce){ .lbl{ transition:none; } }
+  .ec-stage{position:absolute;inset:0}
+  .ec-stage canvas{display:block;width:100%;height:100%}
+  .ec-ui{position:absolute;inset:0;pointer-events:none}
+  .ec-brand{position:absolute;top:26px;left:30px;font-family:var(--mono);font-size:13px;letter-spacing:.22em;color:var(--volt);font-weight:700}
+  .ec-brand span{display:block;margin-top:4px;font-size:10px;letter-spacing:.18em;color:var(--mut);font-weight:400}
+  .ec-labels{position:absolute;inset:0}
+  .ec-label{position:absolute;top:0;left:0;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink);opacity:0;white-space:nowrap;will-change:transform,opacity}
+  .ec-label i{display:block;width:36px;height:1px;background:var(--dim)}
+  .ec-label em{font-style:normal;color:var(--amber);opacity:0;transition:opacity .5s}
+  .ec-label.is-swapped em{opacity:1}
+  .ec-label.is-swapped i{background:var(--amber)}
+  .ec-hint{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--mut);text-transform:uppercase;animation:hintPulse 2.4s ease-in-out infinite}
+  @keyframes hintPulse{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .ec-finale{position:absolute;left:0;right:0;bottom:0;padding:120px 30px 56px;text-align:center;opacity:0;background:linear-gradient(transparent, rgba(10,11,8,.88) 65%)}
+  .ec-finale h2{font-size:clamp(30px,5vw,54px);font-weight:800;letter-spacing:-.01em}
+  .ec-finale p{max-width:560px;margin:10px auto 22px;color:var(--mut);font-size:16px}
+  .ec-finale a{display:inline-block;pointer-events:auto;font-weight:700;text-decoration:none}
+  .ec-finale a:hover{filter:brightness(1.08)}
+  .ec-finale a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+.rs-btn.lp-cta{background:var(--volt);color:#0b0b0c;border-radius:999px;padding:13px 24px;font:600 15px Inter,system-ui,sans-serif}
+.step.cut{padding:0;display:block;min-height:0}.step.cut .sh{padding:70px 6vw 0;margin-bottom:24px}
+.ec-brand{top:52px}
+@media (max-width:720px){.ec-label{font-size:10px}.ec-label i{width:20px}}
+
+/* v3: playable storyboard, shot tabs, tilting concept boards, phone */
+.looks{perspective:1400px;flex:0 0 auto;margin-top:2vh}.look{transform-style:preserve-3d;will-change:transform}.look img{aspect-ratio:880/386;object-fit:cover}
+.picked-line{text-align:center;color:#b9b8b0;font-size:15px;margin:22px 0 0}.picked-line b{color:var(--volt)}.picked-line a{color:var(--volt)}
+.sb{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;flex:1;align-items:center}
+.viewer{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+.viewer img{display:block;width:100%;aspect-ratio:2.35/1;object-fit:cover}
+.viewer span{position:absolute;left:14px;top:12px;font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#111;background:var(--volt);padding:4px 8px;border-radius:5px}
+.viewer p{position:absolute;left:0;right:0;bottom:0;margin:0;padding:38px 18px 14px;font-size:17px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.ctl{display:flex;gap:14px;align-items:center;margin:0 0 14px}.ctl input{flex:1;accent-color:var(--volt)}
+.sb .board{grid-template-columns:repeat(3,1fr);flex:none}.board figure.on{border-color:var(--volt);box-shadow:0 0 0 1px var(--volt)}.board figure:hover{transform:none}
+.s4.first .sb{display:none}
+.tabs{display:flex;gap:8px;margin:0 0 12px}.tabs button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:7px 16px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}.tabs button.on{background:var(--volt);border-color:var(--volt);color:#111}
+@media (max-width:760px){
+  .rail{display:none}.hero{min-height:52vh;padding:40px 18px 10px}.hero p{font-size:17px}
+  .step{padding:44px 16px 28px;min-height:0}.sh{grid-template-columns:1fr;gap:10px;padding-right:0}.sh .no{font-size:44px}.sh h2{font-size:25px}.sh p{font-size:15px}.sh .btn{justify-self:start}
+  .stage{min-height:0;flex:none;height:118vw}#st1{height:150vw}
+  .lbl{font-size:8px}.lbl em{font-size:10px}.say{left:10px;right:10px;transform:none;font-size:13px;bottom:10px}.srcs button{font-size:11px;padding:5px 9px}
+  .step.cut .sh{padding:44px 16px 0}.ec-brand{top:44px}
+  .looks{grid-template-columns:1fr;gap:12px}.look:hover,.look.on{transform:none!important}
+  .sb{grid-template-columns:1fr;gap:12px}.viewer p{font-size:14px;padding:26px 12px 10px}.sb .board{grid-template-columns:repeat(6,1fr);gap:4px}.board figcaption{display:none}
+  .wipe{min-height:0;flex:none;height:56vw}.room{min-height:70vh}.tree{font-size:12px;gap:6px}.tree span{padding:7px 10px}
+}
+
+/* light phone version (body.lite): pictures, one clip, taps */
+.lite .stage{height:auto!important;min-height:0;background:none;border:0;overflow:visible}
+.lite #st1{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer}
+.lite #st1 img{display:block;width:100%}.lite #st1 img.b{position:absolute;inset:0;opacity:0;transition:opacity .6s}.lite #st1.sorted img.b{opacity:1}
+.lite #cut video{display:block;width:100%;background:#0b0b0c}
+.cutsteps{margin:14px 16px 6px;padding:0 0 0 20px;color:#c4c3bb;font-size:15px;line-height:1.7}.cutsteps li::marker{color:var(--volt);font-weight:700}
+.rcards{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 6px;-webkit-overflow-scrolling:touch}
+.rcard{flex:0 0 82%;scroll-snap-align:center;text-align:left;background:#131312;border:1px solid var(--line);border-radius:14px;overflow:hidden;padding:0 0 12px;color:var(--ink);font:inherit;cursor:pointer}
+.rcard img{display:block;width:100%;aspect-ratio:2.355/1;object-fit:cover}.rcard b{display:block;padding:10px 14px 2px;font-size:16px}.rcard em{display:block;padding:0 14px;font-style:normal;color:#b9b8b0;font-size:14px}
+.rcard .who{display:block;padding:9px 14px;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.rcard.ours{border-color:var(--volt)}.rcard.ours .who{color:var(--volt)}
+.rcount{margin:10px 0 0;color:#b9b8b0;font-size:14px;text-align:center}
+.lite .sb .board{display:flex;overflow-x:auto;scroll-snap-type:x proximity;gap:6px;margin:0 -16px;padding:0 16px 4px}.lite .sb .board figure{flex:0 0 30%;scroll-snap-align:start}
+.lite *{-webkit-tap-highlight-color:transparent}
+.lite .wipe{cursor:default}.lite .wipe img,.lite .wipe .bar,.lite .wipe .t.l{display:none}
+
+/* step 03 as five flat rows */
+.rrows{display:grid;gap:10px}
+.rrow{display:grid;grid-template-columns:56px 1.15fr 1fr 44px 1fr;gap:18px;align-items:center;padding:10px 16px;border:1px solid var(--line);border-radius:14px;background:#111110;cursor:pointer;color:var(--ink);font:inherit;text-align:left;width:100%;transition:border-color .25s}
+.rrow:hover{border-color:rgba(201,216,79,.5)}.rrow .n{font:700 30px Inter,system-ui,sans-serif;color:var(--dim);letter-spacing:-.03em}
+.rrow .w b{display:block;font-size:19px;margin:0 0 3px}.rrow .w em{font-style:normal;color:#b9b8b0;font-size:14px}
+.rrow .arrow{text-align:center;color:var(--dim);font-size:22px}.rrow .pic{position:relative;display:block;transition:opacity .35s,filter .35s}
+.rrow .pic img{display:block;width:100%;aspect-ratio:2.355/1;object-fit:cover;border-radius:8px}
+.rrow .pic i{position:absolute;left:8px;top:7px;background:rgba(0,0,0,.7);padding:3px 7px;border-radius:5px;font:600 10px var(--mono);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:#d8d7cf}
+.rrow .ours{opacity:.22;filter:grayscale(1)}.rrow.on{border-color:var(--volt)}.rrow.on .ours{opacity:1;filter:none}.rrow.on .ours i,.rrow.on .n,.rrow.on .arrow{color:var(--volt)}.rrow.on .theirs{opacity:.45}
+.rcount b{color:var(--volt)}
+/* side rail: dots only; a step's name shows in a pill on hover, so it never sits on the content */
+.rail{right:14px;gap:12px}.rail a{position:relative}.rail a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:#1a1a18;border:1px solid #33332c;border-radius:6px;padding:4px 8px;font:600 11px Inter,system-ui,sans-serif;letter-spacing:0;text-transform:none;color:var(--ink);white-space:nowrap;opacity:0!important;pointer-events:none}.rail a:hover span{opacity:1!important}
+.sh{padding-right:30px}
+.reftile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;aspect-ratio:2.355/1;border:1px dashed #44443c;border-radius:8px;background:#141412;color:#b9b8b0;font-size:13px}
+.reftile b{font:700 30px Inter,system-ui,sans-serif;color:var(--ink);letter-spacing:-.02em}.rcard .shot{display:block}.rcard .reftile{border-radius:0;border-width:0 0 1px}
+.credit a{color:#a9a89f}.credit a:hover{color:var(--volt)}
+/* site chrome (added by build-site.py) */
+.topnav{display:flex;align-items:center;gap:22px;padding:18px 6vw;font-size:14px}.topnav a{color:#c4c3bb;text-decoration:none}.topnav a:hover{color:var(--ink)}
+.topnav .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--ink);margin-right:auto}.topnav .brand img{width:26px;height:26px;border-radius:6px}
+.topnav .pill{border:1px solid var(--volt);color:var(--volt);border-radius:999px;padding:8px 16px;font-weight:600}
+.legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
+@media (max-width:760px){.topnav{padding:14px 16px;gap:14px}.topnav .hide-sm{display:none}}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
-</head>
-<body>
-<section class="stage" id="S" aria-label="Interactive breakdown of a shot from the short film Last Train">
-  <nav class="nav">
-    <a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a>
-        <a class="hide-sm" href="/real-estate/">Real estate</a>
-    <a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a>
-    <a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a>
-  </nav>
-  <div class="copy"><h1>Every film is a recipe.</h1><p>Pull a shot apart. Swap an ingredient. See what it becomes.</p></div>
-  <ol class="hint"><li><b>Pull apart</b> the shot (button or scroll)</li><li><b>Click a layer</b> to keep, swap or remove it</li><li><b>Watch the finished shot</b> change</li></ol>
-  <div class="menu" id="menu" role="menu"><button data-a="keep">Keep</button><button data-a="swap" class="go">Swap ↻</button><button data-a="remove">Remove</button></div>
-  <div class="bar"><button id="pull">Pull apart</button><button id="reset">Reset</button><a class="pill" href="https://room.reelixstudio.ai/">Open the Room →</a></div>
-  <div class="result" id="res" aria-live="polite"></div>
+</head><body>
+<nav class="topnav"><a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a><a class="hide-sm" href="/real-estate/">Real estate</a><a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a><a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a></nav>
+<nav class="rail" id="rail"></nav>
+
+<header class="hero">
+  <p class="kick">Under the hood</p>
+  <h1>Watch a film get made.</h1>
+  <p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p>
+</header>
+
+<section class="step" id="s1" data-n="Imagine">
+  <div class="sh"><div class="no">01</div><div><h2>Imagine: your saves, sorted.</h2><p>Everything you saved from Pinterest, Instagram and YouTube goes in as a mess. One click sorts it by what each picture is doing.</p></div><button class="btn" id="sortTop">Sort it</button></div>
+  <div class="stage" id="st1"><canvas></canvas><div class="srcs" id="srcs"></div><button id="sortbtn">Taste Map<small>▶ CLICK TO SORT</small></button><div class="tip" id="tip1"></div></div>
 </section>
+
+<section class="step cut" id="s2" data-n="Break it down">
+  <div class="sh"><div class="no">02</div><div><h2>Break it down: the video comes apart.</h2><p>Keep scrolling. A finished video splits into its parts: footage, style and light, motion, sound, story. We swap some, add one of our own, and it goes back together as our film.</p></div><span></span></div>
+  <div id="cut"></div>
+  <p class="credit" style="padding:0 6vw 30px">Reference: KPop Demon Hunters (Sony Pictures Animation / Netflix), shown for analysis · Our film: Last Train, Reelix Studio · <a href="https://www.youtube.com/watch?v=dn5dKI5mVn4" target="_blank" rel="noopener">Watch the reference clip ↗</a></p>
+</section>
+
+<section class="step" id="s2b" data-n="Swap the rules">
+  <div class="sh"><div class="no">03</div><div><h2>Swap the rules: keep what works.</h2><p>The style comes down to five rules. Each row is their shot on the left and ours on the right. Click a row to bring ours in.</p></div><button class="btn ghost" id="flipAll">Flip all to ours</button></div>
+  <div id="st2"></div>
+  <p class="rcount" id="rcount"></p>
+  <p class="credit">Reference frames: KPop Demon Hunters (Sony Pictures Animation / Netflix), shown for analysis · Our film: Last Train, Reelix Studio · <a href="https://www.youtube.com/watch?v=dn5dKI5mVn4" target="_blank" rel="noopener">Watch the reference clip ↗</a></p>
+</section>
+
+<section class="step" id="s3" data-n="Concepts">
+  <div class="sh"><div class="no">04</div><div><h2>Concepts: three ways to tell it.</h2><p>The rules become three different looks for the same story. You pick one before anything gets built.</p></div><span></span></div>
+  <div class="looks" id="looks"></div>
+  <p class="picked-line" id="pline">Hover a board to look around it. Click one to pick it.</p>
+</section>
+
+<section class="step s4" id="s4" data-n="Storyboard">
+  <div class="sh"><div class="no">05</div><div><h2>Storyboard: 18 pictures, no video yet.</h2><p>Every shot is one still. You approve all of them first, so nothing gets animated that you haven't seen.</p></div><button class="btn ghost" id="sk">Show the first sketch</button></div>
+  <div class="sb"><div class="viewer"><img id="vimg" src="assets/home/img/K1.jpg" alt=""><span id="vno">Shot 1 of 18</span><p id="vnote"></p></div>
+    <div class="sbside"><div class="ctl"><button class="btn" id="play">▶ Play the board</button><input type="range" id="scrub" min="1" max="18" value="1" aria-label="Shot"></div><div class="board" id="board"></div></div></div><div class="sketch"><img src="assets/home/img/board-lasttrain.jpg" alt="First storyboard sketch"></div>
+</section>
+
+<section class="step" id="s5" data-n="Motion">
+  <div class="sh"><div class="no">06</div><div><h2>Motion: the still starts to move.</h2><p>Each approved frame goes to the video model with its sheets. Drag the bar to see the frame on one side and the moving shot on the other.</p></div><span></span></div>
+  <div class="tabs" id="mtabs"><button class="on" data-k="K1">Shot 1</button><button data-k="K2">Shot 2</button></div>
+  <div class="wipe" id="wipe"><video id="wvid" src="assets/home/img/K1.mp4" muted loop playsinline autoplay></video><img src="assets/home/img/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
+</section>
+
+<section class="step room" id="s6" data-n="The Room">
+  <p class="kick">Your turn</p>
+  <h2>Make your own in the Room.</h2>
+  <p>Same steps, your idea. Start from our demo or from a blank project.</p>
+  <a class="btn" href="https://room.reelixstudio.ai/" style="text-decoration:none">Open the Room →</a>
+  <div class="tree"><span>Kinds of work</span><i>→</i><span>Projects</span><i>→</i><span class="v">Demo · Last Train</span><i>+</i><span>New project</span></div>
+</section>
+
 <div class="legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>© Reelix Studio LLC</span></div>
+
 <script type="module">
-import * as THREE from 'three';
-const A = 'assets/recipe/';
-const LOOKS = ['dry', 'chase', 'storm', 'dawn'];
-const LOOKNAME = { dry: 'Platform, before', chase: 'The chase', storm: 'Storm on the roof', dawn: 'Dawn' };
-const SHOTNAME = { dry: 'K1 · umbrella twirl', chase: 'K11 · it’s in the car', storm: 'K14 · the fight', dawn: 'K18 · the last train' };
-const LAYERS = [
-  { key: 'place',    label: 'Place',     num: '01', vers: LOOKS },
-  { key: 'creature', label: 'Creature',  num: '02', vers: LOOKS },
-  { key: 'her',      label: 'Character', num: '03', vers: LOOKS },
-  { key: 'props',    label: 'Props',     num: '04', vers: LOOKS },
-];
-const host = document.getElementById('S');
-const small = () => host.clientWidth < 760;
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s), Q = new URLSearchParams(location.search);
+// phones get the light version: no three.js, no live 3D (?lite=1 / ?heavy=1 force either one)
+const LITE = Q.has('lite') || (!Q.has('heavy') && matchMedia('(max-width:760px)').matches); document.body.classList.toggle('lite', LITE);
+// side rail
+const steps = [...document.querySelectorAll('.step')];
+steps.forEach((s, i) => { const a = document.createElement('a'); a.href = '#' + s.id; a.innerHTML = `<span>${s.dataset.n}</span>`; $('#rail').appendChild(a);
+  new IntersectionObserver(([e]) => a.classList.toggle('on', e.isIntersecting), { rootMargin: '-45% 0px -45% 0px' }).observe(s); });
+async function heavy(THREE) {
+// one three.js stage per section, drawn only while on screen
+function makeStage(host, fov, frame) { const cv = host.querySelector('canvas'), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, preserveDrawingBuffer: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+  const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(fov, 1, .1, 100), S = { host, R, scene, cam, onResize: () => {} };
+  const resize = () => { const W = host.clientWidth, H = host.clientHeight; R.setSize(W, H, false); cam.aspect = W / H; S.onResize(W, H); cam.updateProjectionMatrix(); };
+  let vis = false, last = performance.now(); const loop = now => { if (!vis) return; const dt = Math.min(.05, (now - last) / 1000); last = now; frame(dt, now); R.render(scene, cam); requestAnimationFrame(loop); };
+  new IntersectionObserver(([e]) => { const was = vis; vis = e.isIntersecting; if (vis && !was) { last = performance.now(); resize(); requestAnimationFrame(loop); } }).observe(host);
+  addEventListener('resize', resize); S.resize = resize;
+  S.proj = v => { const p = v.clone().project(cam); return [(p.x + 1) / 2 * host.clientWidth, (1 - p.y) / 2 * host.clientHeight]; }; return S; }
+const TL = new THREE.TextureLoader(), load = u => { const t = TL.load(u); t.colorSpace = THREE.SRGBColorSpace; return t; };
 
-const state = { apart: 0, apartT: 0, rotY: 0, rotX: 0, tRotY: -.42, tRotX: .05, sel: null, hover: null, shotPulse: 0 };
-const loader = new THREE.TextureLoader(), cache = {};
-const tex = n => cache[n] || (cache[n] = (() => { const t = loader.load(A + n + '.jpg', () => fit()); t.colorSpace = THREE.SRGBColorSpace; return t; })());
-const src = (L, v) => v ? `${L.key}-${v}` : L.key;
-LAYERS.forEach(L => tex(src(L, L.vers[0]))); tex('shot-dry');
-const warm = () => { LAYERS.forEach(L => L.vers.forEach(v => tex(src(L, v)))); LOOKS.forEach(l => tex('shot-' + l)); ['place','creature','her'].forEach(k => ['chase','storm','dawn'].forEach(l => tex(`mix-${k}-${l}`))); };
-setTimeout(warm, 900);
+/* ───────── 01 IMAGINE — the scatter → Taste Map piece from Reelix Imagine's home, ported as is ───────── */
+{ const OPC = { differentiate: '#E95549', unify: '#5792E9', direct: '#DEB049', infer: '#BF66B4', transform: '#E38A5A', scale: '#86C46B', rhythm: '#4CC3C3', reveal: '#A3A9B5', immerse: '#55B7DE', disrupt: '#E36AAE' }, OPS = Object.keys(OPC);
+  const SRC = { pinterest: ['Pinterest', '#E60023'], instagram: ['Instagram', '#E1306C'], youtube: ['YouTube', '#FF0000'], upload: ['Your own files', '#9a9a9a'] };
+  const host = $('#st1'), cards = [], opLabels = {}; let T = +(Q.get('sorted') || 0), target = T, pulse = 0, hoverSrc = null, PORT = false; window.__im = () => ({ target, T });
+  const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const bez = (a, b, t) => { const u = 1 - t; return new THREE.Vector3(u * u * a.x + t * t * b.x, u * u * a.y + t * t * b.y, u * u * a.z + 2 * u * t * 1.2 + t * t * b.z); };
+  const PN = 160, pg = new THREE.BufferGeometry(), pp = new Float32Array(PN * 3), pt = new Float32Array(PN); for (let i = 0; i < PN; i++) pt[i] = Math.random(); pg.setAttribute('position', new THREE.BufferAttribute(pp, 3));
+  const S = makeStage(host, 38, (dt, now) => { const tt = now / 1000;
+    T += Math.sign(target - T) * Math.min(Math.abs(target - T), dt * .2);
+    ring.rotation.z += dt * .25; ring2.rotation.z -= dt * .12; pulse *= .94; ringMat.opacity = .75 + .25 * Math.sin(tt * 2) + pulse * .3; ring.scale.setScalar(1 + pulse * .06);
+    cards.forEach(g => { const u = g.userData, k = Math.max(0, Math.min(1, (T - u.delay * .5) / .5)), e = ease(k), p = bez(u.a, u.b, e);
+      if (k === 0) { p.x += Math.sin(tt * .35 + u.ph) * .09; p.y += Math.cos(tt * .3 + u.ph) * .09; }
+      g.position.copy(p); g.rotation.set(u.rot.x * (1 - e) + (k === 0 ? Math.sin(tt * .3 + u.ph) * .15 : 0), u.rot.y * (1 - e), u.rot.z * (1 - e) + (PORT ? Math.PI / 2 : 0));
+      g.scale.setScalar(u.s * (1 - e) + e * (1 - .35 * Math.sin(Math.PI * e)));
+      const dim = hoverSrc && u.r.src !== hoverSrc; u.pic.material.opacity = dim ? .15 : 1; u.frame.material.opacity = e * .95 * (dim ? .2 : 1); });
+    const on = target > 0 && T < .98; parts.material.opacity += ((on ? .9 : 0) - parts.material.opacity) * .08;
+    for (let i = 0; i < PN; i++) { pt[i] = (pt[i] + dt * .35) % 1; const s = pt[i], x = -9 + s * 18; pp[i * 3] = x; pp[i * 3 + 1] = Math.sin(s * 9 + i) * .4 * (1 - Math.abs(x) / 9) + (i % 7 - 3) * .08 * (Math.abs(x) > 2 ? 1 : .2); }
+    pg.attributes.position.needsUpdate = true;
+    const [mx, my] = S.proj(new THREE.Vector3(0, 0, 0)); sb.style.left = mx + 'px'; sb.style.top = my + 'px';
+    Object.values(opLabels).forEach(o => { const [x, y] = S.proj((PORT ? o.pp : o.p).clone().applyEuler(scene.rotation)); o.el.style.left = x + 'px'; o.el.style.top = y + 'px'; o.el.style.opacity = T > .9 ? 1 : 0; }); });
+  const { scene, cam } = S; cam.position.set(0, .6, 19); cam.lookAt(0, 0, 0);
+  S.onResize = (W, H) => { const t = Math.tan(THREE.MathUtils.degToRad(19)); PORT = W < H; scene.rotation.z = PORT ? -Math.PI / 2 : 0; cam.position.y = PORT ? 0 : .6;
+    cam.position.z = PORT ? Math.max(16.4 / t, 7.9 / (t * cam.aspect)) : Math.max(16.5, 16.2 / (t * cam.aspect), 5.4 / t); cam.lookAt(0, 0, 0); };
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xc9d84f, transparent: true, opacity: .9 });
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.9, .05, 16, 120), ringMat), ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3, .015, 8, 120), new THREE.MeshBasicMaterial({ color: 0xc9d84f, transparent: true, opacity: .35 }));
+  const core = new THREE.Mesh(new THREE.CircleGeometry(1.85, 64), new THREE.MeshBasicMaterial({ color: 0x1c2410, transparent: true, opacity: .55 })); core.position.z = -.05; scene.add(ring, ring2, core);
+  const parts = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xc9d84f, size: .06, transparent: true, opacity: 0 })); scene.add(parts);
+  const slotFor = (op, k) => { const gi = OPS.indexOf(op), col = gi % 5, row = Math.floor(gi / 5), gx = 4.4 + col * 2.55, gy = 2.3 - row * 4.5; return new THREE.Vector3(gx + (k % 4 - 1.5) * .58, gy + (1.5 - Math.floor(k / 4)) * .58, 0); };
+  fetch('assets/home/imagine/refs.json').then(r => r.json()).then(REFS => { const count = {}, geo = new THREE.PlaneGeometry(.54, .54), fgeo = new THREE.PlaneGeometry(.6, .6);
+    const SZ = REFS.map(() => { const q = Math.random(); return 1.3 * (q < .06 ? 2.8 + Math.random() * .9 : q < .26 ? 1.25 + Math.random() * .5 : .38 + Math.random() * .36); });
+    const order = REFS.map((_, i) => i).sort((a, b) => SZ[b] - SZ[a]), POS = [], placed = [];
+    order.forEach(i => { const r = SZ[i] * .3; let best = null, bs = -1e9;
+      for (let t = 0; t < 70; t++) { const ang = Math.random() * 6.283, rr = Math.sqrt(Math.random()), x = -9.4 + Math.cos(ang) * rr * 6.3, y = Math.sin(ang) * rr * 7.2; if (x > -3.3) continue;
+        let m = 1e9; placed.forEach(p => { m = Math.min(m, Math.hypot(p.x - x, p.y - y) - p.r - r); }); const sc = m - (SZ[i] > 3.2 ? Math.hypot(x + 9.3, y) * .12 : 0); if (sc > bs) { bs = sc; best = { x, y }; } }
+      best = best || { x: -9.3, y: 0 }; placed.push({ x: best.x, y: best.y, r }); POS[i] = best; });
+    REFS.forEach((r, idx) => { const k = count[r.op] = (count[r.op] || 0); count[r.op]++; const g = new THREE.Group();
+      const frame = new THREE.Mesh(fgeo, new THREE.MeshBasicMaterial({ color: OPC[r.op], transparent: true, opacity: 0 })); frame.position.z = -.01; g.add(frame);
+      const pic = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: load(`assets/home/imagine/t/${r.i}.jpg`), transparent: true })); g.add(pic);
+      const sz = SZ[idx], big = sz > 3, mid = sz > 1.5 && !big;
+      const a = new THREE.Vector3(POS[idx].x, POS[idx].y, big ? -1.6 - Math.random() * .6 : mid ? -.6 + Math.random() * .6 : .2 + Math.random() * 1.2);
+      const rot = new THREE.Euler((Math.random() - .5) * .25, (Math.random() - .5) * .35, (Math.random() - .5) * (big ? .18 : .5));
+      g.position.copy(a); g.rotation.copy(rot); g.userData = { r, a, b: slotFor(r.op, Math.min(k, 19)), rot, delay: Math.random() * .6, frame, pic, ph: Math.random() * 6.28, s: sz }; g.renderOrder = Math.round((a.z + 3) * 10); g.scale.setScalar(sz); scene.add(g); cards.push(g); });
+    OPS.forEach((op, gi) => { const d = document.createElement('div'); d.className = 'lbl'; d.style.color = OPC[op]; d.style.opacity = 0; d.textContent = op; host.appendChild(d); opLabels[op] = { el: d, p: new THREE.Vector3(4.4 + gi % 5 * 2.55, 2.3 - Math.floor(gi / 5) * 4.5 + 1.42, 0), pp: new THREE.Vector3(4.4 + gi % 5 * 2.55 - 1.36, 2.3 - Math.floor(gi / 5) * 4.5, 0) }; }); });
+  const sb = $('#sortbtn'), top = $('#sortTop');
+  const run = () => { target = target > 0 ? 0 : 1; pulse = 1; sb.querySelector('small').textContent = target ? '↺ CLICK TO MESS IT UP' : '▶ CLICK TO SORT'; top.textContent = target ? 'Mess it up' : 'Sort it'; };
+  sb.onclick = top.onclick = run; if (T) { sb.querySelector('small').textContent = '↺ CLICK TO MESS IT UP'; top.textContent = 'Mess it up'; }
+  $('#srcs').innerHTML = Object.entries(SRC).map(([k, [n, c]]) => `<button data-s="${k}" style="--c:${c}"><i></i>${n}</button>`).join('');
+  document.querySelectorAll('#srcs button').forEach(b => { b.onmouseenter = () => { hoverSrc = b.dataset.s; b.classList.add('on'); }; b.onmouseleave = () => { hoverSrc = null; b.classList.remove('on'); }; });
+  const ray = new THREE.Raycaster(), m = new THREE.Vector2(), tip = $('#tip1');
+  host.addEventListener('mousemove', ev => { const b = host.getBoundingClientRect(); m.set((ev.clientX - b.left) / b.width * 2 - 1, -(ev.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(m, cam);
+    const h = ray.intersectObjects(cards.map(g => g.userData.pic))[0]; if (!h) return tip.style.display = 'none'; const r = cards.find(g => g.userData.pic === h.object).userData.r, s = SRC[r.src] || SRC.upload;
+    tip.innerHTML = `<span style="color:${OPC[r.op]}">${r.op} · ${r.tech}</span><b>${r.d}</b><span style="color:${s[1]}">from ${s[0]}</span>`; tip.style.display = 'block'; tip.style.left = Math.min(b.width - 300, ev.clientX - b.left + 14) + 'px'; tip.style.top = (ev.clientY - b.top + 14) + 'px'; });
+  host.addEventListener('mouseleave', () => tip.style.display = 'none'); }
 
-const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setClearColor(0x0b0b0c);
-host.prepend(r.domElement); const cv = r.domElement; cv.setAttribute('aria-hidden', 'true');
-const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(34, 1, .1, 100);
-const g = new THREE.Group(); scene.add(g);
-function size() { const w = host.clientWidth, h = host.clientHeight; r.setSize(w, h, false); cam.aspect = w / h;
-  if (small()) { cam.fov = 46; cam.position.set(0, -.2, 11.5); g.position.set(.2, -.15, 0); g.scale.setScalar(.78); }
-  else { cam.fov = 34; cam.position.set(0, .3, 10); g.position.set(w / h > 1.9 ? 2.4 : 2.1, -.1, 0); g.scale.setScalar(1); }
-  cam.updateProjectionMatrix(); }
-size(); addEventListener('resize', size);
+/* ───────── 02 BREAK IT DOWN — the "exploded cut" engine from the old Studio landing page, fed with this film ───────── */
+{ const CUT = { brand: 'THE EXPLODED CUT', subBrand: 'ONE VIDEO, TAKEN APART AND REBUILT', hint: 'Keep scrolling — the video comes apart', scrollLength: 7,
+    filmA: { src: REFOK ? 'assets/home/exploded/assets/local/film-a.mp4' : 'data:video/mp4,', label: 'THE REFERENCE · KPOP DEMON HUNTERS', recipe: { title: 'KPOP DEMON HUNTERS (2025)', sub: 'Sony Pictures Animation · Netflix · 3D animation',
+      stats: ['one swing, one streak of light', 'the hit floods the whole frame', 'one colour per scene', 'fast burst, then hold on a face'], note: 'We keep the recipe, never the footage.' } },
+    filmB: { src: 'assets/home/exploded/assets/film-b.mp4', label: 'LAST TRAIN · OURS, 2026' },
+    finale: { headline: 'Same parts. Our film.', tagline: 'The reference came apart into five parts. A new story, a new look and one hard rule went in. Last Train came out.', cta: { text: 'See the rules we swapped ↓', href: '#s2b' } },
+    layers: [
+      { id: 'footage', part: 'PART 01', name: 'FOOTAGE', type: 'video' },
+      { id: 'style', part: 'PART 02', name: 'STYLE & LIGHT', type: 'grade', lut: 'STAGE NEON · ONE COLOUR PER SCENE', tint: '#ff4fd8', swap: { lut: 'GREEN TRAIN CAR · PINK BLADE LIGHT', tint: '#7dffa0', note: 'SWAPPED' } },
+      { id: 'motion', part: 'PART 03', name: 'MOTION', type: 'motion' },
+      { id: 'sound', part: 'PART 04', name: 'SOUND', type: 'sound' },
+      { id: 'story', part: 'PART 05', name: 'STORY', type: 'story', text: 'A pop group secretly fights demons between their shows.', swap: { text: 'On the last subway home, a shadow moves one seat closer at every stop.', note: 'SWAPPED' } },
+      { id: 'rule', part: 'PART 06', name: 'OUR RULE', type: 'story', addIn: true, swap: { text: 'No words at all. One main character. Exactly 120 seconds.', note: 'NEW PART' } } ],
+    timeline: { explodeStart: .08, explodeEnd: .28, swaps: [{ layer: 'story', at: .32, span: .11 }, { layer: 'rule', at: .47, span: .11 }, { layer: 'style', at: .61, span: .11 }], recompressStart: .74, recompressEnd: .93, footageCross: [.79, .92] } };
+  import('./assets/home/exploded/exploded-cut.js').then(({ ExplodedCut }) => { window.__cut = new ExplodedCut($('#cut'), CUT); }).catch(e => console.error('exploded cut failed', e)); }
 
-const W = 4.4;
-const plane = map => { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map, transparent: true, depthWrite: false, side: THREE.DoubleSide }));
-  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .2 }))); return m; };
-const aspectOf = t => t && t.image && t.image.width ? t.image.width / t.image.height : 2.35;
-function fit() { state.layers?.forEach(o => { const a = aspectOf(o.mesh.material.map); o.mesh.scale.set(W * .62, W * .62 / a, 1); }); }
-state.shot = plane(tex('shot-dry')); state.shot.renderOrder = 10; g.add(state.shot);
-state.shot.children[0].material.color.set(0xc9d84f); state.shot.children[0].material.opacity = .7;
-const shotLbl = document.createElement('div'); shotLbl.className = 'lbl shot'; host.appendChild(shotLbl);
-state.layers = LAYERS.map((L, i) => { const o = { L, i, v: 0, on: true, lift: 0, fade: 1, flip: 0 };
-  o.mesh = plane(tex(src(L, L.vers[0]))); o.mesh.renderOrder = i + 1; o.mesh.userData.o = o; g.add(o.mesh);
-  o.lbl = document.createElement('button'); o.lbl.className = 'lbl btn'; o.lbl.type = 'button'; host.appendChild(o.lbl);
-  o.lbl.addEventListener('pointerenter', () => state.hover = o); o.lbl.addEventListener('pointerleave', () => state.hover = null);
-  o.lbl.addEventListener('click', e => { e.stopPropagation(); openMenu(o, e); }); return o; });
-fit();
-
-const res = document.getElementById('res');
-const MIX = new Set(['place-chase','place-storm','place-dawn','creature-chase','creature-storm','creature-dawn','her-chase','her-storm','her-dawn']);
-const LAYERNAME = { place: 'Place', creature: 'Creature', her: 'Character', props: 'Props' };
-function result() {
-  const L = state.layers, look = o => o.L.vers[o.v];
-  const allOn = L.every(o => o.on), looks = L.map(look), same = allOn && looks.every(x => x === looks[0]);
-  const changed = L.filter(o => look(o) !== 'dry');
-  const placeL = L[0], base = placeL.on ? look(placeL) : 'dry';
-  let img, html, real = false;
-  if (same) { img = 'shot-' + looks[0]; real = true;
-    html = `<b>${SHOTNAME[looks[0]]}</b><span class="tag real">real shot from the film</span><br>Every layer matches “${LOOKNAME[looks[0]]}”.`; }
-  else if (allOn && changed.length === 1 && MIX.has(changed[0].L.key + '-' + look(changed[0]))) { const o = changed[0];
-    img = `mix-${o.L.key}-${look(o)}`;
-    html = `<b>Your mix</b><span class="tag new">new shot</span><br>${LAYERNAME[o.L.key]} swapped to “${LOOKNAME[look(o)]}”, everything else kept.`; }
-  else { img = 'shot-' + base; const removed = L.filter(o => !o.on).map(o => o.L.label.toLowerCase());
-    html = `<b>Your mix</b><span class="tag new">new shot</span><br>Closest real shot: ${SHOTNAME[base]}${removed.length ? ` · without the ${removed.join(', ')}` : ''}.<br>In the Room, this mix becomes a new shot.`; }
-  const m = state.shot.material; if (m.map !== tex(img)) { m.map = tex(img); m.needsUpdate = true; state.shotPulse = 1; }
-  res.innerHTML = html;
-  shotLbl.innerHTML = `<i>→</i>Finished shot<em>${real ? 'from the film' : 'your mix'}</em>`;
 }
-result();
 
-// input
-const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
-const pick = e => { const b = cv.getBoundingClientRect(); ptr.set((e.clientX - b.left) / b.width * 2 - 1, -(e.clientY - b.top) / b.height * 2 + 1); ray.setFromCamera(ptr, cam);
-  const hit = ray.intersectObjects(state.layers.filter(o => o.on || o.fade > .3).map(o => o.mesh), false)[0]; return hit ? hit.object.userData.o : null; };
-let down = null, moved = 0;
-cv.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch' }; moved = 0; if (!down.touch) cv.setPointerCapture(e.pointerId); });
-cv.addEventListener('pointermove', e => {
-  if (down) { const dx = e.clientX - down.x, dy = e.clientY - down.y; moved += Math.abs(dx) + Math.abs(dy);
-    state.tRotY += dx * .006; if (!down.touch) state.tRotX = Math.max(-.5, Math.min(.6, state.tRotX + dy * .004));
-    down.x = e.clientX; down.y = e.clientY; cv.classList.add('grab'); return; }
-  state.hover = pick(e); cv.classList.toggle('hot', !!state.hover); });
-const up = e => { cv.classList.remove('grab'); const click = down && moved < 8; down = null; if (!click) return; const o = pick(e); if (o) openMenu(o, e); else closeMenu(); };
-cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { down = null; cv.classList.remove('grab'); });
-cv.addEventListener('wheel', e => { if (e.ctrlKey) return; if ((state.apartT >= 1 && e.deltaY > 0) || (state.apartT <= 0 && e.deltaY < 0)) return;
-  e.preventDefault(); state.apartT = Math.max(0, Math.min(1, state.apartT + e.deltaY * .0015)); syncPull(); closeMenu(); }, { passive: false });
-const pullB = document.getElementById('pull');
-const syncPull = () => pullB.textContent = state.apartT > .5 ? 'Put together' : 'Pull apart';
-pullB.onclick = () => { state.apartT = state.apartT > .5 ? 0 : 1; syncPull(); closeMenu(); };
-document.getElementById('reset').onclick = () => { state.layers.forEach(o => { o.on = true; o.v = 0; o.mesh.material.map = tex(src(o.L, o.L.vers[0])); }); fit();
-  state.tRotY = -.42; state.tRotX = .05; state.apartT = 1; syncPull(); closeMenu(); result(); };
+/* ───────── 03 SWAP THE RULES — five flat rows on desktop (theirs → ours); the phone gets swipe cards in lite() ───────── */
+const RULES = [['One swing, one streak', 'ref1', 'K14', 'Her blade swing is one pink streak.', '1:16'], ['The hit floods the frame', 'ref2', 'K13', 'Our hit lights the whole roof pink and white.', '1:24'], ['One colour per scene', 'ref3', 'K11', 'Our train car is all green, and the creature is pure black.', '1:02'], ['It arrives through a glow', 'ref4', 'K7', 'Ours bursts out of the dark behind one glowing eye.', '2:23'], ['Fast, then hold on a face', 'ref5', 'K10', 'After each burst, we hold on her face under the hood.', '1:33']], REF = 'assets/home/exploded/assets/local/';
+// the reference film's footage and stills stay on the dev machine; the public site shows where to find each moment instead
+const REFOK = !Q.has('public') && !window.REELIX_PUBLIC, theirs = i => REFOK ? `<img src="${REF}${RULES[i][1]}.jpg" alt="" loading="lazy">` : `<span class="reftile"><b>${RULES[i][4]}</b>in the reference clip</span>`;
+function rows() { const on = new Set(Array.from({ length: +(Q.get('f') || 0) }, (_, i) => i)), box = $('#st2');
+  const draw = () => { box.innerHTML = '<div class="rrows">' + RULES.map(([n, a, b, d], i) => `<button class="rrow ${on.has(i) ? 'on' : ''}" data-i="${i}"><span class="n">0${i + 1}</span><span class="w"><b>${n}</b><em>${on.has(i) ? d : 'Click to bring ours in.'}</em></span><span class="pic theirs">${theirs(i)}<i>theirs</i></span><span class="arrow">→</span><span class="pic ours"><img src="assets/home/img/${b}.jpg" alt="" loading="lazy"><i>ours</i></span></button>`).join('') + '</div>';
+    $('#rcount').innerHTML = `<b>${on.size} of 5</b> rules swapped in.${on.size === 5 ? ' All five are now ours.' : ''}`; $('#flipAll').textContent = on.size === 5 ? 'Back to the reference' : 'Flip all to ours'; };
+  box.onclick = e => { const r = e.target.closest('.rrow'); if (!r) return; const i = +r.dataset.i; on.has(i) ? on.delete(i) : on.add(i); draw(); };
+  $('#flipAll').onclick = () => { const to = on.size < 5; RULES.forEach((_, i) => to ? on.add(i) : on.delete(i)); draw(); }; draw(); }
 
-const menu = document.getElementById('menu');
-function openMenu(o, e) { state.sel = o; const b = host.getBoundingClientRect();
-  if (small()) { menu.style.left = '50%'; menu.style.transform = 'translateX(-50%)'; menu.style.top = (b.height - 190) + 'px'; }
-  else { menu.style.transform = ''; menu.style.left = Math.max(8, Math.min(e.clientX - b.left + 12, b.width - 230)) + 'px'; menu.style.top = Math.max(60, e.clientY - b.top - 22) + 'px'; }
-  menu.classList.add('on');
-  menu.querySelector('[data-a=swap]').disabled = o.L.vers.length < 2;
-  menu.querySelector('[data-a=remove]').textContent = o.on ? 'Remove' : 'Put back'; }
-function closeMenu() { menu.classList.remove('on'); state.sel = null; }
-addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-menu.addEventListener('click', e => { const a = e.target.dataset.a, o = state.sel; if (!a || !o) return;
-  if (a === 'swap') { o.v = (o.v + 1) % o.L.vers.length; o.flip = 1; o.on = true; setTimeout(() => { o.mesh.material.map = tex(src(o.L, o.L.vers[o.v])); fit(); }, reduce ? 0 : 160); }
-  if (a === 'remove') o.on = !o.on;
-  if (a === 'keep') o.on = true;
-  menu.querySelector('[data-a=remove]').textContent = o.on ? 'Remove' : 'Put back';
-  if (a !== 'swap') closeMenu();
-  setTimeout(result, 170); });
-
-// render (pauses when the stage is off screen)
-let visible = true; new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) requestAnimationFrame(loop); }).observe(host);
-const v = new THREE.Vector3(), ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
-const place = (el, obj, dx, dy) => { obj.getWorldPosition(v); v.x += dx; v.y += dy; v.project(cam);
-  el.style.left = ((v.x + 1) / 2 * host.clientWidth) + 'px'; el.style.top = ((1 - v.y) / 2 * host.clientHeight) + 'px'; };
-function loop(t) {
-  if (!visible) return;
-  const sp = reduce ? 1 : .08;
-  state.apart += (state.apartT - state.apart) * sp; const k = ease(state.apart);
-  state.rotY += (state.tRotY * k - state.rotY) * (reduce ? 1 : .1); state.rotX += (state.tRotX - state.rotX) * (reduce ? 1 : .1);
-  g.rotation.set(state.rotX * k, state.rotY + (reduce ? 0 : Math.sin(t / 2600) * .03), 0);
-  const n = state.layers.length, sc = g.scale.x;
-  state.layers.forEach(o => { const j = n - o.i; o.lift += ((state.hover === o || state.sel === o ? 1 : 0) - o.lift) * .15;
-    o.fade += ((o.on ? 1 : 0) - o.fade) * .12; o.flip *= reduce ? 0 : .86;
-    o.mesh.position.set(k * (.62 * j - 1.75) - o.lift * .15 * k, k * (.52 * j - .25) + o.lift * .18 * k - (1 - o.fade) * .5, -k * 1.15 * j - .06 * j - (1 - o.fade) * 1.5);
-    o.mesh.rotation.y = o.flip * Math.PI; o.mesh.material.opacity = Math.max(0, (k - .08) / .92) * .98 * (.08 + .92 * o.fade); o.mesh.visible = k > .08;
-    const edge = o.mesh.children[0].material; edge.opacity = state.sel === o ? .95 : .2 + o.lift * .5; edge.color.set(state.sel === o || o.lift > .5 ? 0xc9d84f : 0xffffff);
-    o.lbl.innerHTML = `<i>${o.L.num}</i>${o.L.label}<em>${o.L.vers[o.v] ? LOOKNAME[o.L.vers[o.v]] : '—'}</em>`; o.lbl.classList.toggle('off', !o.on);
-    o.lbl.style.opacity = k > .35 ? 1 : 0; o.lbl.style.pointerEvents = k > .35 ? 'auto' : 'none';
-    place(o.lbl, o.mesh, -W * .31 * sc, (W * .31 / 2.35 + .12) * sc); });
-  state.shotPulse *= .9;
-  state.shot.position.set(-k * .55, -k * 1.2, k * 1.2 + .05); const s = 1 - .2 * k + state.shotPulse * .04, a = aspectOf(state.shot.material.map);
-  state.shot.scale.set(W * s, W * s / a, 1);
-  place(shotLbl, state.shot, -state.shot.scale.x / 2 * sc, (state.shot.scale.y / 2 + .14) * sc);
-  r.render(scene, cam); requestAnimationFrame(loop);
+/* ───────── PHONE: the same three steps as pictures, one short clip and taps ───────── */
+function lite() {
+  // 01: two stills of the desktop piece, tap to swap
+  const st1 = $('#st1'); st1.innerHTML = '<img src="assets/home/lite/imagine-messy.jpg" alt="Saved pictures in a mess"><img class="b" src="assets/home/lite/imagine-sorted.jpg" alt="The same pictures sorted into the Taste Map" loading="lazy">';
+  const t1 = () => { const on = st1.classList.toggle('sorted'); $('#sortTop').textContent = on ? 'Mess it up' : 'Sort it'; }; st1.onclick = $('#sortTop').onclick = t1;
+  // 02: a short muted clip of the layers opening and closing; plays only while on screen
+  $('#cut').innerHTML = '<video id="cutvid" src="assets/home/lite/cut.mp4" poster="assets/home/lite/cut-poster.jpg" muted loop playsinline preload="none"></video><ol class="cutsteps"><li>The reference, whole</li><li>It opens into parts</li><li>Our story, our look and our rule go in</li><li>It closes as Last Train</li></ol>';
+  const cv = $('#cutvid'); new IntersectionObserver(([e]) => e.isIntersecting ? cv.play().catch(() => {}) : cv.pause(), { threshold: .35 }).observe(cv);
+  $('#s2 .sh p').textContent = 'A finished video splits into its parts: footage, style and light, motion, sound, story. We swap some, add one of our own, and it goes back together as our film.';
+  // 03: five cards to swipe, tap one to flip theirs → ours
+  const R = RULES;
+  const st2 = $('#st2'); st2.innerHTML = '<div class="rcards">' + R.map(([n, a, b, d], i) => `<button class="rcard" data-i="${i}"><span class="who">theirs · reference</span><span class="shot">${theirs(i)}</span><b>0${i + 1} ${n}</b><em>Tap to swap in ours</em></button>`).join('') + '</div>'; $('#rcount').textContent = '0 of 5 rules swapped in. Swipe for more.';
+  const cards = [...st2.querySelectorAll('.rcard')], count = () => { const k = cards.filter(c => c.classList.contains('ours')).length; $('#rcount').textContent = `${k} of 5 rules swapped in.${k === 5 ? ' All five are now ours.' : ' Swipe for more.'}`; $('#flipAll').textContent = k === 5 ? 'Back to the reference' : 'Flip all to ours'; };
+  const set = (c, o) => { c.classList.toggle('ours', o); c.querySelector('.shot').innerHTML = o ? `<img src="assets/home/img/${R[c.dataset.i][2]}.jpg" alt="">` : theirs(+c.dataset.i); c.querySelector('.who').textContent = o ? 'ours · Last Train' : 'theirs · reference'; c.querySelector('em').textContent = o ? R[c.dataset.i][3] : 'Tap to swap in ours'; };
+  cards.forEach(c => c.onclick = () => { set(c, !c.classList.contains('ours')); count(); }); $('#flipAll').onclick = () => { const to = cards.some(c => !c.classList.contains('ours')); cards.forEach(c => set(c, to)); count(); };
+  $('#s2b .sh p').textContent = 'The style comes down to five rules. Tap a card to swap that rule for our own version of it.';
+  $('.hero p').textContent = 'Scroll down. Every step below is the real thing from our last film, and every one of them is something you can tap.'; $('#pline').textContent = 'Tap a board to pick it.';
+  // 06: the shot just plays
+  $('#s5 .sh p').textContent = 'Each approved frame goes to the video model with its sheets, and comes back moving.';
 }
-requestAnimationFrame(loop);
-setTimeout(() => { if (state.apartT === 0) { state.apartT = 1; syncPull(); } }, reduce ? 0 : 1100);
+if (LITE) lite(); else { rows(); heavy(await import('three')); }
+
+/* ───────── 03 CONCEPTS ───────── */
+{ const L = [['ink', 'Ink', 'Black and white with one colour: her yellow coat.'], ['dusk', 'Dusk', 'Soft watercolour sunset, a round and gentle creature.'], ['glitch', 'Glitch', 'Cyber neon, hard edges, a different heroine.']];
+  const box = $('#looks'); box.innerHTML = L.map(([k, n, d]) => `<div class="look" data-k="${k}"><img src="assets/home/img/look-${k}.jpg" alt=""><div><span class="tag">PICKED</span><b>${n}</b><p>${d}</p></div></div>`).join('');
+  box.onclick = e => { const c = e.target.closest('.look'); if (!c) return; const was = c.classList.contains('on'); box.querySelectorAll('.look').forEach(x => x.classList.remove('on')); c.classList.toggle('on', !was); box.classList.toggle('picked', !was);
+    $('#pline').innerHTML = was ? 'Hover a board to look around it. Click one to pick it.' : `You picked <b>${c.querySelector('b').textContent}</b>. Next, the picked look gets drawn shot by shot. <a href="#s4">See the storyboard ↓</a>`; };
+  box.querySelectorAll('.look').forEach(c => { c.onpointermove = e => { if (matchMedia('(max-width:760px)').matches) return; const b = c.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5; c.style.transform = `translateY(-6px) rotateY(${x * 14}deg) rotateX(${-y * 12}deg)`; }; c.onpointerleave = () => c.style.transform = ''; });
+  if (Q.get('look')) box.querySelector(`[data-k=${Q.get('look')}]`).click(); }
+
+/* ───────── 04 STORYBOARD ───────── */
+{ const NOTE = ['She spins her umbrella like a sword.', 'A couple passes. She glances over.', 'They walk off. A shadow slides along the wall.', 'A shoulder bump knocks one earbud out.', 'The earbud lands on the track. One eye opens.', 'A claw snatches it as the train pulls in.', 'It lunges at the lens. Ink floods the frame.', 'It boards. She pulls her hood up.', 'The phones glitch. Nobody looks up.', 'She sees it in the glass and grips the umbrella.', 'It prowls closer. She walks away, calm.', 'Through the door into an empty car. It follows.', 'The handle becomes a hilt. The blade comes out.', 'They fight. It never strikes back.', 'Its fist opens toward her.', 'In the tunnel she shields it. The earbud is in its palm.', 'It takes the bench, one eye open.', 'Hood down, hair loose.'];
+  $('#board').innerHTML = NOTE.map((_, i) => `<figure data-i="${i + 1}"><img loading="lazy" src="assets/home/img/K${i + 1}.jpg" alt="Shot ${i + 1}"><figcaption>${i + 1}</figcaption></figure>`).join('');
+  let cur = 1, timer = null; const figs = [...document.querySelectorAll('#board figure')];
+  const show = n => { cur = n; $('#vimg').src = `assets/home/img/K${n}.jpg`; $('#vno').textContent = `Shot ${n} of 18`; $('#vnote').textContent = NOTE[n - 1]; $('#scrub').value = n; figs.forEach(f => f.classList.toggle('on', +f.dataset.i === n)); };
+  const stop = () => { clearInterval(timer); timer = null; $('#play').textContent = '▶ Play the board'; };
+  $('#play').onclick = () => { if (timer) return stop(); if (cur === 18) show(1); $('#play').textContent = '❚❚ Pause'; timer = setInterval(() => { if (cur === 18) return stop(); show(cur + 1); }, 900); };
+  $('#board').onclick = e => { const f = e.target.closest('figure'); if (f) { stop(); show(+f.dataset.i); } }; $('#scrub').oninput = e => { stop(); show(+e.target.value); }; show(+(Q.get('shot') || 1));
+  $('#sk').onclick = () => { stop(); const f = $('#s4').classList.toggle('first'); $('#sk').textContent = f ? 'Show the final frames' : 'Show the first sketch'; }; if (Q.get('sketch')) $('#sk').click();
+  window.__sb = () => ({ cur, playing: !!timer }); }
+
+/* ───────── 05 MOTION — drag to wipe between the frame and the clip ───────── */
+{ const w = $('#wipe'), still = $('#wstill'), bar = $('#wbar'); const set = x => { const b = w.getBoundingClientRect(), k = Math.max(.03, Math.min(.97, (x - b.left) / b.width)); still.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`; bar.style.left = k * 100 + '%'; };
+  let drag = false; w.addEventListener('pointerdown', e => { drag = true; w.setPointerCapture(e.pointerId); set(e.clientX); }); w.addEventListener('pointermove', e => drag && set(e.clientX)); w.addEventListener('pointerup', () => drag = false);
+  document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/${t.dataset.k}.jpg`; $('#wvid').src = `assets/home/img/${t.dataset.k}.mp4`; $('#wvid').play().catch(() => {}); });
+  requestAnimationFrame(() => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); addEventListener('resize', () => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); }
 </script>
-</body>
-</html>
+</body></html>
