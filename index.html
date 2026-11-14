@@ -193,6 +193,23 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .ytwrap{position:absolute;overflow:hidden;background:#000;z-index:2;transition:opacity .15s}
 .ytwrap iframe{pointer-events:none;position:absolute;left:-4.5%;top:50%;width:109%;aspect-ratio:16/9;transform:translateY(-50%);border:0}
 .ytwrap span{position:absolute;left:10px;top:9px;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#e9e8e0;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:5px;pointer-events:none}
+/* step 06 — review: the shot and the team chat are the same height; the chat scrolls inside */
+.rv{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;align-items:stretch}
+.rvleft{display:flex;flex-direction:column;gap:12px}
+.rvshot{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}.rvshot img{display:block;width:100%;aspect-ratio:2.35/1;object-fit:cover}
+.rvtag{position:absolute;left:14px;top:12px;font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#111;background:var(--volt);padding:4px 8px;border-radius:5px}
+.rvshot .ok{position:absolute;right:14px;top:12px;font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--volt);background:rgba(0,0,0,.7);border:1px solid var(--volt);padding:4px 8px;border-radius:5px;display:none}.rvshot.done .ok{display:block}
+.vers{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center}.vers button{position:relative;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:none;cursor:pointer}
+.vers button img{display:block;width:100%;aspect-ratio:2.35/1;object-fit:cover;opacity:.5}.vers button span{position:absolute;left:6px;top:5px;font:700 10px var(--mono);color:#111;background:#d8d7cf;padding:2px 5px;border-radius:3px}
+.vers button.on{border-color:var(--volt)}.vers button.on img{opacity:1}.vers button.on span{background:var(--volt)}.vers button[hidden]{visibility:hidden;display:block}.vers i{color:var(--dim);font-style:normal}
+.chatcol{position:relative;min-height:320px}.chat{position:absolute;inset:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:#0f0f0e;overflow:hidden}
+.chat header{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}.chat header em{margin-left:auto;font-style:normal;color:var(--dim);font-weight:400;font-size:13px}
+.msgs{display:flex;flex-direction:column;gap:10px;padding:14px;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#3a3a34 transparent}
+.m{display:flex;gap:10px;max-width:94%}.m .b{background:#191917;border:1px solid #2a2a26;border-radius:4px 12px 12px 12px;padding:8px 12px}.m .b b{display:block;font-size:12px;color:var(--dim);font-weight:600}.m p{margin:1px 0 0;font-size:14px}
+.m.rx{cursor:pointer}.m.rx .b{background:#161a0b;border-color:#3d4420}.m.rx .b b{color:var(--volt)}.m.rx img{display:block;width:150px;aspect-ratio:2.35/1;object-fit:cover;border-radius:6px;margin-top:7px;border:1px solid #3d4420}.m.rx.on .b{border-color:var(--volt)}
+.m[hidden]{display:none}.av{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;font:700 12px Inter,system-ui,sans-serif;color:#111;flex:none}
+.typing{padding:10px 14px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+@media (max-width:760px){.rv{grid-template-columns:1fr;gap:12px}.chatcol{min-height:0}.chat{position:static}.msgs{overflow:visible}.rvtag,.rvshot .ok{font-size:9px;top:8px}.rvtag{left:8px}.rvshot .ok{right:8px}}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head><body>
@@ -236,8 +253,14 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
     <div class="sbside"><div class="ctl"><button class="btn" id="play">▶ Play the board</button><input type="range" id="scrub" min="1" max="18" value="1" aria-label="Shot"></div><div class="board" id="board"></div></div></div><div class="sketch"><img src="assets/home/img/board-lasttrain.jpg" alt="First storyboard sketch"></div>
 </section>
 
+<section class="step" id="s4r" data-n="Review">
+  <div class="sh"><div class="no">06</div><div><h2>Review: the team talks, the shot changes.</h2><p>Everyone on the project is in one chat next to the shot. A note becomes a new version, and the thread keeps going until everyone says yes. Click a version to see what each note changed.</p></div><button class="btn ghost allbtn" id="rvplay">▶ Play the thread</button></div>
+  <div class="rv"><div class="rvleft"><div class="rvshot" id="rvshot"><img id="rvbig" src="assets/home/img/big/K13-v3.jpg" alt="Shot 13"><span class="rvtag" id="rvtag">Shot 13 · version 3</span><span class="ok">✓ Approved by all three</span></div><div class="vers" id="vers"></div></div>
+    <div class="chatcol"><div class="chat"><header>Shot 13 · the blade <em>3 people + Reelix</em></header><div class="msgs" id="msgs"></div><div class="typing" id="rvhint"></div></div></div></div>
+</section>
+
 <section class="step" id="s5" data-n="Motion">
-  <div class="sh"><div class="no">06</div><div><h2>Motion: the still starts to move.</h2><p>Each approved frame goes to the video model with its sheets. Drag the bar to see the frame on one side and the moving shot on the other.</p></div><span></span></div>
+  <div class="sh"><div class="no">07</div><div><h2>Motion: the still starts to move.</h2><p>Each approved frame goes to the video model with its sheets. Drag the bar to see the frame on one side and the moving shot on the other.</p></div><span></span></div>
   <div class="tabs" id="mtabs"><button class="on" data-k="K1">Shot 1</button><button data-k="K2">Shot 2</button></div>
   <div class="wipe" id="wipe"><video id="wvid" src="assets/home/img/K1.mp4" muted loop playsinline autoplay></video><img src="assets/home/img/big/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
 </section>
@@ -404,7 +427,20 @@ if (LITE) lite(); else { rows(); heavy(await import('three')); }
   $('#sk').onclick = () => { stop(); const f = $('#s4').classList.toggle('first'); $('#sk').textContent = f ? 'Show the final frames' : 'Show the first sketch'; }; if (Q.get('sketch')) $('#sk').click();
   window.__sb = () => ({ cur, playing: !!timer }); }
 
-/* ───────── 05 MOTION — drag to wipe between the frame and the clip ───────── */
+/* ───────── 06 REVIEW — one shot beside the team chat; notes become versions (three real versions of shot 13) ───────── */
+{ const P = { D: ['Director', '#c9d84f'], P: ['Producer', '#7fc8ff'], C: ['Client', '#ffb37a'], R: ['Reelix', '#f2f1ec'] };
+  const T = [['D', 'The umbrella is her sword, but I can\'t tell that here. Can it be in the swing?'], ['R', 'Made version 2: the umbrella is open in the swing.', 2], ['P', 'Now the canopy covers her. Lose the canopy. The yellow handle is the hilt.'], ['C', 'And a blade out of both ends, like a staff.'], ['R', 'Made version 3: no canopy, the handle is the hilt, a blade out of both ends.', 3], ['D', 'That\'s the one.'], ['P', 'Approved.'], ['C', 'Approved. Send it to motion.']];
+  $('#msgs').innerHTML = T.map(([k, t, v], i) => `<div class="m ${k === 'R' ? 'rx' : ''}" ${v ? `data-v="${v}"` : ''}><span class="av" style="background:${P[k][1]}">${k === 'R' ? '◐' : k}</span><div class="b"><b>${P[k][0]}</b><p>${t}</p>${v ? `<img src="assets/home/img/K13-v${v}.jpg" alt="" loading="lazy">` : ''}</div></div>`).join('');
+  $('#vers').innerHTML = [1, 2, 3].map((v, i) => `${i ? '<i>→</i>' : ''}<button data-v="${v}"><img src="assets/home/img/K13-v${v}.jpg" alt="" loading="lazy"><span>v${v}</span></button>`).join('');
+  let n = T.length, timer = null; const box = $('#s4r'), ms = [...box.querySelectorAll('.m')], vb = [...box.querySelectorAll('.vers button')], arrows = [...box.querySelectorAll('.vers i')];
+  const show = v => { $('#rvbig').src = `assets/home/img/big/K13-v${v}.jpg`; $('#rvtag').textContent = `Shot 13 · version ${v}`; vb.forEach(b => b.classList.toggle('on', +b.dataset.v === v)); ms.forEach(m => m.classList.toggle('on', +m.dataset.v === v)); $('#rvshot').classList.toggle('done', v === 3 && n === T.length); box.dataset.v = v; };
+  const upto = k => { n = k; ms.forEach((m, i) => m.hidden = i >= k); const top = Math.max(1, ...T.slice(0, k).map(t => t[2] || 1)); vb.forEach(b => b.hidden = +b.dataset.v > top); arrows.forEach((a, i) => a.style.display = i + 2 > top ? 'none' : ''); show(top);
+    $('#rvhint').textContent = k < T.length ? `${k} of ${T.length} messages` : 'Three versions, eight messages, one yes from everyone.'; const sc = $('#msgs'); sc.scrollTop = sc.scrollHeight; };
+  box.addEventListener('click', e => { const el = e.target.closest('[data-v]'); if (el) show(+el.dataset.v); });
+  $('#rvplay').onclick = () => { clearInterval(timer); let k = 0; upto(0); timer = setInterval(() => { upto(++k); if (k >= T.length) clearInterval(timer); }, 1100); };
+  upto(+(Q.get('rn') || T.length)); window.__rv = () => ({ n, v: +box.dataset.v, lh: Math.round($('.rvleft').getBoundingClientRect().height), rh: Math.round($('.chatcol').getBoundingClientRect().height) }); }
+
+/* ───────── 07 MOTION — drag to wipe between the frame and the clip ───────── */
 { const w = $('#wipe'), still = $('#wstill'), bar = $('#wbar'); const set = x => { const b = w.getBoundingClientRect(), k = Math.max(.03, Math.min(.97, (x - b.left) / b.width)); still.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`; bar.style.left = k * 100 + '%'; };
   let drag = false; w.addEventListener('pointerdown', e => { drag = true; w.setPointerCapture(e.pointerId); set(e.clientX); }); w.addEventListener('pointermove', e => drag && set(e.clientX)); w.addEventListener('pointerup', () => drag = false);
   document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/big/${t.dataset.k}.jpg`; $('#wvid').src = `assets/home/img/${t.dataset.k}.mp4`; $('#wvid').play().catch(() => {}); });
