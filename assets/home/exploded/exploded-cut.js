@@ -9,9 +9,9 @@
 
 import * as THREE from 'three';
 
-const PLANE_W = 6.4, PLANE_H = 3.6;   // 16:9 film plane, world units
+const PLANE_W = 6.4, PLANE_H = 2.79;  // film plane, world units — 2.3:1 to match our films (was 16:9 = 3.6, which stretched them)
 const RAIL = 9.5;                     // how far swapped parts slide on the x rail
-const TEX_W = 1024, TEX_H = 576;
+const TEX_W = 1024, TEX_H = 446;
 
 const clamp01 = v => Math.min(1, Math.max(0, v));
 const smooth = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
@@ -150,6 +150,15 @@ function soundLayer() {
    (two-vault rule: store the recipe, never the footage) */
 function recipeTexture(recipe) {
   const { c, x } = makeCanvas();
+  if (recipe.plain) {   // a quiet plate for a film we link to instead of hosting: title + one line, no list
+    const g = x.createLinearGradient(0, 0, TEX_W, TEX_H); g.addColorStop(0, '#15170f'); g.addColorStop(1, '#0b0c09');
+    x.fillStyle = g; x.fillRect(0, 0, TEX_W, TEX_H); frameBorder(x, 'rgba(233,237,244,.5)');
+    x.strokeStyle = '#c9d84f'; x.lineWidth = 4; x.beginPath(); x.arc(TEX_W / 2, TEX_H / 2 - 44, 46, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = '#c9d84f'; x.beginPath(); x.moveTo(TEX_W / 2 - 14, TEX_H / 2 - 68); x.lineTo(TEX_W / 2 + 26, TEX_H / 2 - 44); x.lineTo(TEX_W / 2 - 14, TEX_H / 2 - 20); x.closePath(); x.fill();
+    x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#e9edf4'; x.font = '800 44px Archivo, Inter, sans-serif'; x.fillText(recipe.title, TEX_W / 2, TEX_H / 2 + 56);
+    x.fillStyle = 'rgba(233,237,244,.6)'; x.font = '500 22px "IBM Plex Mono", monospace'; x.fillText(recipe.sub, TEX_W / 2, TEX_H / 2 + 104);
+    return texFromCanvas(c);
+  }
   x.fillStyle = 'rgba(9,14,26,.96)';
   x.fillRect(0, 0, TEX_W, TEX_H);
   frameBorder(x, 'rgba(233,237,244,.85)');
