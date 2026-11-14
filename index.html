@@ -210,6 +210,9 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .m[hidden]{display:none}.av{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;font:700 12px Inter,system-ui,sans-serif;color:#111;flex:none}
 .typing{padding:10px 14px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
 @media (max-width:760px){.rv{grid-template-columns:1fr;gap:12px}.chatcol{min-height:0}.chat{position:static}.msgs{overflow:visible}.rvtag,.rvshot .ok{font-size:9px;top:8px}.rvtag{left:8px}.rvshot .ok{right:8px}}
+.ytlite{position:relative;aspect-ratio:2.296/1;overflow:hidden;background:#000;margin:0 0 10px}
+.ytlite iframe{pointer-events:none;position:absolute;left:-4.5%;top:50%;width:109%;aspect-ratio:16/9;transform:translateY(-50%);border:0}
+.ytlite span{position:absolute;left:10px;top:9px;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#e9e8e0;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:5px}
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head><body>
@@ -217,7 +220,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 <nav class="rail" id="rail"></nav>
 
 <header class="hero" id="top">
-  <video id="herovid" src="assets/home/exploded/assets/film-b.mp4" poster="assets/home/img/big/K1.jpg" muted loop playsinline autoplay></video>
+  <video id="herovid" poster="assets/home/img/big/K1.jpg" muted loop playsinline autoplay></video>
   <div class="heroshade"></div>
   <span class="herotag"><i></i>Now playing · Last Train, made here</span>
   <div class="herotext"><h1>Watch a film<br>get made.</h1><p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
@@ -262,7 +265,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 <section class="step" id="s5" data-n="Motion">
   <div class="sh"><div class="no">07</div><div><h2>Motion: the still starts to move.</h2><p>Each approved frame goes to the video model with its sheets. Drag the bar to see the frame on one side and the moving shot on the other.</p></div><span></span></div>
   <div class="tabs" id="mtabs"><button class="on" data-k="K1">Shot 1</button><button data-k="K2">Shot 2</button></div>
-  <div class="wipe" id="wipe"><video id="wvid" src="assets/home/img/K1.mp4" muted loop playsinline autoplay></video><img src="assets/home/img/big/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
+  <div class="wipe" id="wipe"><video id="wvid" muted loop playsinline autoplay></video><img src="assets/home/img/big/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
 </section>
 
 <section class="step room" id="s6" data-n="The Room">
@@ -279,6 +282,8 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 const $ = s => document.querySelector(s), Q = new URLSearchParams(location.search);
 // phones get the light version: no three.js, no live 3D (?lite=1 / ?heavy=1 force either one)
 const LITE = Q.has('lite') || (!Q.has('heavy') && matchMedia('(max-width:760px)').matches); document.body.classList.toggle('lite', LITE);
+// desktop plays the upscaled clips; phones keep the small ones
+const VID = k => LITE ? `assets/home/img/${k}.mp4` : `assets/home/img/big/${k}.mp4`; $('#herovid').src = LITE ? 'assets/home/exploded/assets/film-b.mp4' : 'assets/home/exploded/assets/film-b-hd.mp4'; $('#wvid').src = VID('K1');
 // side rail
 const steps = [...document.querySelectorAll('.step')];
 steps.forEach((s, i) => { const a = document.createElement('a'); a.href = '#' + s.id; a.innerHTML = `<span>${s.dataset.n}</span>`; $('#rail').appendChild(a);
@@ -393,6 +398,7 @@ function lite() {
   $('#s1 .sh p').textContent = 'Everything you save from Pinterest, YouTube and Instagram, plus your own files, goes in as a mess. One tap sorts it by what each picture is doing.';
   // 02: a short muted clip of the layers opening and closing; plays only while on screen
   $('#cut').innerHTML = '<video id="cutvid" src="assets/home/lite/cut.mp4" poster="assets/home/lite/cut-poster.jpg" muted loop playsinline preload="none"></video><ol class="cutsteps"><li>The reference, whole</li><li>It opens into parts</li><li>Our story, our look and our rule go in</li><li>It closes as Last Train</li></ol>';
+  if (!REFOK) { $('#cut').insertAdjacentHTML('afterbegin', '<div class="ytlite" id="ytlite"><span>The original · playing from YouTube</span></div>'); const yl = $('#ytlite'); new IntersectionObserver(([e], o) => { if (!e.isIntersecting) return; o.disconnect(); yl.insertAdjacentHTML('afterbegin', '<iframe title="The reference clip" allow="autoplay; encrypted-media; picture-in-picture" src="https://www.youtube-nocookie.com/embed/dn5dKI5mVn4?start=58&end=69&autoplay=1&mute=1&loop=1&playlist=dn5dKI5mVn4&controls=0&playsinline=1&rel=0&modestbranding=1&cc_load_policy=0&iv_load_policy=3&disablekb=1&fs=0"></iframe>'); }, { rootMargin: '300px' }).observe(yl); }
   const cv = $('#cutvid'); new IntersectionObserver(([e]) => e.isIntersecting ? cv.play().catch(() => {}) : cv.pause(), { threshold: .35 }).observe(cv);
   $('#s2 .sh p').textContent = 'A finished video splits into its parts: footage, style and light, motion, sound, story. We swap some, add one of our own, and it goes back together as our film.';
   // 03: five cards to swipe, tap one to flip theirs → ours
@@ -443,7 +449,7 @@ if (LITE) lite(); else { rows(); heavy(await import('three')); }
 /* ───────── 07 MOTION — drag to wipe between the frame and the clip ───────── */
 { const w = $('#wipe'), still = $('#wstill'), bar = $('#wbar'); const set = x => { const b = w.getBoundingClientRect(), k = Math.max(.03, Math.min(.97, (x - b.left) / b.width)); still.style.clipPath = `inset(0 ${100 - k * 100}% 0 0)`; bar.style.left = k * 100 + '%'; };
   let drag = false; w.addEventListener('pointerdown', e => { drag = true; w.setPointerCapture(e.pointerId); set(e.clientX); }); w.addEventListener('pointermove', e => drag && set(e.clientX)); w.addEventListener('pointerup', () => drag = false);
-  document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/big/${t.dataset.k}.jpg`; $('#wvid').src = `assets/home/img/${t.dataset.k}.mp4`; $('#wvid').play().catch(() => {}); });
+  document.querySelectorAll('#mtabs button').forEach(t => t.onclick = () => { document.querySelectorAll('#mtabs button').forEach(x => x.classList.toggle('on', x === t)); still.src = `assets/home/img/big/${t.dataset.k}.jpg`; $('#wvid').src = VID(t.dataset.k); $('#wvid').play().catch(() => {}); });
   requestAnimationFrame(() => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); addEventListener('resize', () => { const b = w.getBoundingClientRect(); set(b.left + b.width * .5); }); }
 </script>
 </body></html>
