@@ -155,8 +155,34 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .topnav{display:flex;align-items:center;gap:22px;padding:18px 6vw;font-size:14px}.topnav a{color:#c4c3bb;text-decoration:none}.topnav a:hover{color:var(--ink)}
 .topnav .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--ink);margin-right:auto}.topnav .brand img{width:26px;height:26px;border-radius:6px}
 .topnav .pill{border:1px solid var(--volt);color:var(--volt);border-radius:999px;padding:8px 16px;font-weight:600}
+.topnav .pill.solid{background:var(--volt);color:#0b0b0c}.topnav .pill.solid:hover{color:#0b0b0c;filter:brightness(1.08)}
+.bp{display:inline-flex;align-items:center;gap:8px;border:1px solid #3a2f1d;background:#16130c;color:var(--amber);border-radius:99px;padding:5px 12px;font-size:13px;white-space:nowrap}
+.bp i{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(232,176,106,.15)}
+/* Beta waitlist (#s6). Every word and question comes from room.reelixstudio.ai/api/waitlist/form (assets/waitlist.js). */
+.wrapbox{width:100%;max-width:1040px;margin:0 auto;border:1px solid var(--line);border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#12150b 0%,#0b0b0c 70%);padding:44px 32px 30px;box-sizing:border-box}
+.wrapbox .wk{color:#c4c3bb}
+.wrapbox .lead{max-width:600px;margin:0 auto 22px;display:flex;flex-direction:column;gap:4px;font-size:17px;line-height:1.5;color:#b9b8b0}.wrapbox .lead .hint{margin-top:6px;font-size:14px;color:var(--volt)}
+.wl{position:relative;max-width:600px;margin:26px auto 0;text-align:left;border:1px solid var(--line);border-radius:14px;background:#141414;padding:22px;box-sizing:border-box}
+.wl .qh{display:flex;align-items:center;gap:10px;margin-bottom:12px;font:12px var(--mono);color:var(--dim)}
+.wl .pr{flex:1;height:4px;background:#262626;border-radius:4px;overflow:hidden}.wl .pr i{display:block;height:100%;width:0;background:var(--volt);transition:width .25s}
+.wl .gh{border:1px solid var(--line);border-radius:99px;padding:7px 13px;font:500 13px Inter,system-ui,sans-serif;color:var(--ink);background:none;cursor:pointer;white-space:nowrap}.wl .gh:hover{border-color:var(--dim)}
+.wl .qtip{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);color:#c4c3bb;font:600 12px Inter,sans-serif;background:none;cursor:pointer;padding:0}
+.wl .tipbox{position:absolute;right:16px;top:58px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.6);max-width:330px;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:#c4c3bb}
+.wl .tipbox a{color:var(--volt);cursor:pointer;display:inline-block;margin-top:6px}.wl .tipbox pre{white-space:pre-wrap;font:12px/1.5 var(--mono);color:#c4c3bb;max-height:260px;overflow:auto;margin:8px 0 0;border-top:1px solid var(--line);padding-top:8px}
+.wl .q{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:6px 0 12px;color:var(--ink);line-height:1.15}
+.wl textarea,.wl input[type=email]{width:100%;box-sizing:border-box;background:#0b0b0c;border:1px solid var(--line);border-radius:10px;color:var(--ink);font:15px Inter,system-ui,sans-serif;padding:11px 13px}
+.wl textarea{min-height:90px;resize:vertical}.wl textarea:focus,.wl input:focus{outline:none;border-color:var(--volt)}
+.wl .nv{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}.wl .back{background:none;border:0;color:#8d8c86;font-size:14px;cursor:pointer;text-decoration:underline;padding:6px 0}.wl .back[disabled]{visibility:hidden}
+.wl .cons{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:14px;color:#c4c3bb;cursor:pointer}.wl .cons input{margin-top:3px;accent-color:var(--volt)}
+.wl .dr{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;color:#c4c3bb}.wl .dr small{color:#8d8c86;font:12px var(--mono)}
+.wl .ps{margin-top:8px;min-height:64px;font:12px/1.5 var(--mono)}
+.wl .msg{min-height:18px;margin-top:8px;font-size:13px;color:var(--amber)}.wl .msg.ok{color:var(--volt)}
+.wl .done{padding:26px 6px;text-align:center;font-size:20px;color:var(--ink)}.wl .done b{display:block;color:var(--volt);font-size:34px;margin-bottom:6px}
+.wl .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.room .fine{font-size:13px;color:var(--dim);margin:14px 0 0}.fine a{color:#c4c3bb}.room .wl .btn{font-size:14px;padding:11px 22px}.room .wl p{font-size:inherit;margin:0}.room .wrapbox .lead{margin-bottom:22px}
+.herotext h1.h1wide{font-size:clamp(40px,5.4vw,70px);max-width:none}.herotext:has(.h1wide){max-width:none}
 .legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
-@media (max-width:760px){.topnav{padding:14px 16px;gap:14px}.topnav .hide-sm{display:none}}
+@media (max-width:760px){.topnav{padding:14px 16px;gap:12px}.topnav a{white-space:nowrap}.topnav .brand{font-size:15px;gap:8px}.topnav .pill{padding:7px 12px;font-size:13px}.topnav .hide-sm{display:none}.bp{display:none}.wrapbox{padding:30px 16px 22px}.wl{padding:16px}.wl .q{font-size:22px}.wl .gh{padding:6px 10px;font-size:12px}.wl .qh{flex-wrap:wrap}.wl .pr{flex-basis:100%;order:3}}
 /* v7 — Danney's notes 2026-11-13: one-line step label above the title, rail on the left, wires from a source, hover on rule rows, no dead space */
 .sh{grid-template-columns:1fr auto;column-gap:22px;row-gap:0;align-items:end;padding-right:0;margin-bottom:22px}
 .sh .no{grid-column:1/-1;font:700 12px var(--mono);letter-spacing:.18em;color:var(--volt);margin:0 0 10px}.sh .no::before{content:"STEP "}
@@ -216,14 +242,14 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head><body>
-<nav class="topnav"><a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a><a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a><a class="pill" href="https://room.reelixstudio.ai/">Open the Room</a></nav>
+<nav class="topnav"><a class="brand" href="/"><img src="assets/logo.png" alt="">Reelix Studio</a><a class="hide-sm" href="mailto:hi@reelixstudio.ai">Contact</a><span class="bp"><i></i><span data-w="nav.beta">Private beta</span></span><a href="https://room.reelixstudio.ai/signin" data-w="nav.signin">Sign in</a><a class="pill solid" href="#s6" data-w="nav.join">Join the waitlist</a></nav>
 <nav class="rail" id="rail"></nav>
 
 <header class="hero" id="top">
   <video id="herovid" poster="assets/home/img/big/K1.jpg" muted loop playsinline autoplay></video>
   <div class="heroshade"></div>
   <span class="herotag"><i></i>Now playing · Last Train, made here</span>
-  <div class="herotext"><h1>Watch a film<br>get made.</h1><p>Scroll down. Every step below is the real thing from our last film, and every one of them is something you can click.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
+  <div class="herotext"><h1 class="h1wide">Make a film with your team<br>and your AI.</h1><p>Watch our last film get made below. Every step is the real thing, and you can click each one.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
 </header>
 
 <section class="step" id="s1" data-n="Imagine">
@@ -268,14 +294,17 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
   <div class="wipe" id="wipe"><video id="wvid" muted loop playsinline autoplay></video><img src="assets/home/img/big/K1.jpg" id="wstill" alt=""><div class="bar" id="wbar"></div><span class="t l">Approved frame</span><span class="t rr">Moving shot</span></div>
 </section>
 
-<section class="step room" id="s6" data-n="The Room">
-  <p class="kick">Your turn</p>
-  <h2>Make your own in the Room.</h2>
-  <p>Same steps, your idea. Start from our demo or from a blank project.</p>
-  <a class="btn" href="https://room.reelixstudio.ai/" style="text-decoration:none">Open the Room →</a>
-  <div class="tree"><span>Kinds of work</span><i>→</i><span>Projects</span><i>→</i><span class="v">Demo · Last Train</span><i>+</i><span>New project</span></div>
+<section class="step room" id="s6" data-n="Get in line">
+  <div class="wrapbox">
+    <p class="kick wk" data-w="kick">Private beta · not open yet</p>
+    <h2 data-w="title">Get in line.</h2>
+    <div class="lead" id="wllead"></div>
+    <div class="wl" id="wl"><noscript>Turn on JavaScript to join the waitlist, or email hi@reelixstudio.ai.</noscript></div>
+    <p class="fine" id="wlfine"></p>
+  </div>
 </section>
 
+<script type="module" src="assets/waitlist.js"></script>
 <div class="legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>© Reelix Studio LLC</span></div>
 
 <script type="module">
