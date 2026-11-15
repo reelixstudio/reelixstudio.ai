@@ -158,6 +158,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .topnav .pill.solid{background:var(--volt);color:#0b0b0c}.topnav .pill.solid:hover{color:#0b0b0c;filter:brightness(1.08)}
 .bp{display:inline-flex;align-items:center;gap:8px;border:1px solid #3a2f1d;background:#16130c;color:var(--amber);border-radius:99px;padding:5px 12px;font-size:13px;white-space:nowrap}
 .bp i{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(232,176,106,.15)}
+.bp-sm{display:none} /* phones: the beta note moves above the headline (Danney 11-15: "Show beta on phones first") */
 /* Beta waitlist (#s6). Every word and question comes from room.reelixstudio.ai/api/waitlist/form (assets/waitlist.js). */
 .wrapbox{width:100%;max-width:1040px;margin:0 auto;border:1px solid var(--line);border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#12150b 0%,#0b0b0c 70%);padding:44px 32px 30px;box-sizing:border-box}
 .wrapbox .wk{color:#c4c3bb}
@@ -182,7 +183,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .room .fine{font-size:13px;color:var(--dim);margin:14px 0 0}.fine a{color:#c4c3bb}.room .wl .btn{font-size:14px;padding:11px 22px}.room .wl p{font-size:inherit;margin:0}.room .wrapbox .lead{margin-bottom:22px}
 .herotext h1.h1wide{font-size:clamp(40px,5.4vw,70px);max-width:none}.herotext:has(.h1wide){max-width:none}
 .legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
-@media (max-width:760px){.topnav{padding:14px 16px;gap:12px}.topnav a{white-space:nowrap}.topnav .brand{font-size:15px;gap:8px}.topnav .pill{padding:7px 12px;font-size:13px}.topnav .hide-sm{display:none}.bp{display:none}.wrapbox{padding:30px 16px 22px}.wl{padding:16px}.wl .q{font-size:22px}.wl .gh{padding:6px 10px;font-size:12px}.wl .qh{flex-wrap:wrap}.wl .pr{flex-basis:100%;order:3}}
+@media (max-width:760px){.topnav{padding:14px 16px;gap:12px}.topnav a{white-space:nowrap}.topnav .brand{font-size:15px;gap:8px}.topnav .pill{padding:7px 12px;font-size:13px}.topnav .hide-sm{display:none}.topnav .bp{display:none}.herotext{display:flex;flex-direction:column;align-items:flex-start}.herotext h1{order:1;margin-bottom:10px}.herotext .bp-sm{display:inline-flex;order:2;margin:0 0 14px;font-size:12px;padding:4px 10px}.herotext p{order:3}.herotext .btn{order:4}header.hero{height:400px}.wrapbox{padding:30px 16px 22px}.wl{padding:16px}.wl .q{font-size:22px}.wl .gh{padding:6px 10px;font-size:12px}.wl .qh{flex-wrap:wrap}.wl .pr{flex-basis:100%;order:3}}
 /* v7 — Danney's notes 2026-11-13: one-line step label above the title, rail on the left, wires from a source, hover on rule rows, no dead space */
 .sh{grid-template-columns:1fr auto;column-gap:22px;row-gap:0;align-items:end;padding-right:0;margin-bottom:22px}
 .sh .no{grid-column:1/-1;font:700 12px var(--mono);letter-spacing:.18em;color:var(--volt);margin:0 0 10px}.sh .no::before{content:"STEP "}
@@ -249,7 +250,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
   <video id="herovid" poster="assets/home/img/big/K1.jpg" muted loop playsinline autoplay></video>
   <div class="heroshade"></div>
   <span class="herotag"><i></i>Now playing · Last Train, made here</span>
-  <div class="herotext"><h1 class="h1wide">Make a film with your team<br>and your AI.</h1><p>Watch our last film get made below. Every step is the real thing, and you can click each one.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
+  <div class="herotext"><span class="bp bp-sm"><i></i><span data-w="nav.beta">Private beta</span></span><h1 class="h1wide">Make a film with your team<br>and your AI.</h1><p>Watch our last film get made below. Every step is the real thing, and you can click each one.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
 </header>
 
 <section class="step" id="s1" data-n="Imagine">
