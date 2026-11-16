@@ -1,8 +1,9 @@
 // Beta waitlist (#s6) on reelixstudio.ai, v2 playful (Design SPEC-playful, Danney's go 2026-11-15).
-// Every word, the questions, the AI prompt, the line count and your seat come from the Room
+// Every word, the questions and the AI prompt come from the Room
 // (room.reelixstudio.ai/api/waitlist/form, one list in room/src/data/welcome.ts). Nothing here is typed in.
-// Departure board → the line (anonymous circles, + you?) → a ticket: stops, one question per stop, Copy AI prompt /
-// Paste answer / ?, round ← → buttons, a seat stub. Done: BOARDED, your initial joins the line, a Last Train frame.
+// "Get in line." → departure board → a ticket: stops, one question per stop, Copy AI prompt / Paste answer / ?, round
+// ← → buttons, a BOARDING PASS stub. Done: BOARDED, a stamp, a Last Train frame. No line count or seat number in public
+// (Danney 11-15).
 const API = (location.hostname === "localhost" && new URLSearchParams(location.search).get("wlapi")) || "https://room.reelixstudio.ai/api/waitlist"; // ?wlapi= only for local testing
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, props = {}, ...kids) => {
@@ -48,17 +49,6 @@ if (!still) {
   io.observe(dep);
 }
 
-// ---------- the line ----------
-let count = Number(F.count) || 0;
-function drawLine(me) {
-  const q = $("#wlq"), n = count, show = Math.min(n - (me ? 1 : 0), 7);
-  q.replaceChildren(...[...Array.from({ length: Math.max(0, show) }, () => el("span", { className: "p" })),
-    n - (me ? 1 : 0) > 7 ? el("span", { className: "more", textContent: fill(F.more, { n: n - (me ? 1 : 0) - 7 }) }) : null,
-    me ? el("span", { className: "you me", textContent: me }) : el("span", { className: "you", textContent: F.you })].filter(Boolean));
-  $("#wlcap").replaceChildren(el("b", { textContent: String(n) }), " " + F.count_label);
-}
-drawLine(null);
-
 // ---------- the ticket ----------
 const Q = F.questions, STOPS = [...Q.map((q) => q.stop || q.id), F.email_stop];
 const S = { i: 0, answers: Object.fromEntries(Q.map((q) => [q.id, ""])), email: "", consent: false, via: "typed", sending: false };
@@ -90,11 +80,8 @@ const body = el("div"), msg = el("div", { className: "msg", role: "status" });
 const back = el("button", { type: "button", className: "ib", textContent: "←", "aria-label": F.back_label });
 const next = el("button", { type: "button", className: "ib go", textContent: "→", "aria-label": F.next_label });
 const hp = el("input", { type: "text", name: "website", tabIndex: -1, autocomplete: "off", className: "hp", "aria-hidden": "true" }); // honeypot
-const main = el("div", { className: "main" }, stops, stopn, tools, body, ps, el("div", { className: "nv" }, back, next), msg);
-const seat = el("div", { className: "num" });
-const stub = el("div", { className: "stub" }, el("div", {}, el("div", { className: "wl-lbl", textContent: F.seat_label }), seat), el("div", {}, el("div", { className: "bar" }), el("div", { className: "wl-lbl", textContent: F.stub_brand })));
-const setSeat = (n) => { seat.textContent = "#" + n; };
-setSeat(count + 1);
+const main = el("div", { className: "main" }, stops, stopn, body, tools, ps, el("div", { className: "nv" }, back, next), msg); // Danney 11-16: helpers sit under the answer box, left
+const stub = el("div", { className: "stub" }, el("div", { className: "pass", textContent: F.pass }), el("div", {}, el("div", { className: "bar" }), el("div", { className: "wl-lbl", textContent: F.stub_brand })));
 
 ps.addEventListener("input", () => {
   if (!ps.value.trim()) { msg.textContent = ""; return; }
@@ -161,10 +148,7 @@ next.onclick = async () => {
 };
 
 function done(email, d) {
-  if (Number.isFinite(d.count)) count = d.count; else count += 1;
-  setSeat(Number.isFinite(d.seat) ? d.seat : count);
   $("#wltitle").textContent = F.title_done;
-  drawLine(email.trim()[0].toUpperCase());
   const st = flipRow(F.board.status_done, "st");
   statWrap.replaceChildren(st, el("i", { className: "blink" })); settle(st, F.board.status_done);
   dep.setAttribute("aria-label", `${F.board.dest_label}: ${F.board.dest}. ${F.board.status_label}: ${F.board.status_done}.`);

@@ -102,6 +102,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .picked-line{text-align:center;color:#b9b8b0;font-size:15px;margin:22px 0 0}.picked-line b{color:var(--volt)}.picked-line a{color:var(--volt)}
 .sb{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;flex:1;align-items:center}
 .viewer{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+@media (min-width:761px){.sb{align-items:stretch}.sb .viewer{display:flex;align-items:center}.sb .viewer img{width:100%;height:auto}} /* step 05: the preview is as tall as the board, black bars above and below (Danney picked A, 11-15) */
 .viewer img{display:block;width:100%;aspect-ratio:2.35/1;object-fit:cover}
 .viewer span{position:absolute;left:14px;top:12px;font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#111;background:var(--volt);padding:4px 8px;border-radius:5px}
 .viewer p{position:absolute;left:0;right:0;bottom:0;margin:0;padding:38px 18px 14px;font-size:17px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
@@ -159,10 +160,10 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .bp{display:inline-flex;align-items:center;gap:8px;border:1px solid #3a2f1d;background:#16130c;color:var(--amber);border-radius:99px;padding:5px 12px;font-size:13px;white-space:nowrap}
 .bp i{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(232,176,106,.15)}
 .bp-sm{display:none} /* phones: the beta note moves above the headline (Danney 11-15: "Show beta on phones first") */
-/* Beta waitlist (#s6), v2 playful (Design SPEC-playful 11-15). Every word, the count and the seat come from
+/* Beta waitlist (#s6), v2 playful (Design SPEC-playful 11-15). Every word comes from
    room.reelixstudio.ai/api/waitlist/form (assets/waitlist.js). */
 .wrapbox{width:100%;max-width:1040px;margin:0 auto;border:1px solid var(--line);border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#12150b 0%,#0b0b0c 70%);padding:44px 32px 34px;box-sizing:border-box;text-align:center}
-.room .wrapbox h2{margin:0 0 18px}
+.room .wrapbox h2{margin:0 0 20px}.wrapbox>.dep{margin:0 auto 26px}
 .dep{display:inline-flex;gap:26px;align-items:flex-start;margin:0 auto 26px;padding:14px 18px;background:#050505;border:1px solid #222;border-radius:10px;text-align:left}
 .dep .dcol{display:flex;flex-direction:column;gap:6px}.dep .h{font:600 10px var(--mono);letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
 .dep .col{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px}
@@ -172,21 +173,13 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .flip.st span{color:var(--volt)}
 .blink{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--volt);margin-left:6px;box-shadow:0 0 0 4px rgba(201,216,79,.18);animation:blink 1.6s steps(2,start) infinite}
 @keyframes blink{50%{opacity:.25}}
-.queue{display:flex;justify-content:center;align-items:flex-end;gap:6px;margin:0 0 10px;min-height:44px}
-.queue .p{width:30px;height:30px;border-radius:50%;background:#262626;border:2px solid #0b0b0c}
-.queue .p:nth-child(3n){background:#2b2f1a}.queue .p:nth-child(4n){background:#1f2430}.queue .p:nth-child(5n){background:#30221f}
-.queue .you{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px dashed var(--volt);color:var(--volt);font:600 12px Inter,system-ui,sans-serif;animation:bob 1.2s ease-in-out infinite}
-.queue .you.me{border-style:solid;background:#171a0e;font-size:15px;animation:none}
-.queue .more{font:12px var(--mono);color:var(--dim);margin:0 6px 8px}
-@keyframes bob{50%{transform:translateY(-4px)}}
-.room .qcap{font:12px var(--mono);color:#b9b8b0;margin:0 0 24px}.qcap b{color:var(--volt)}
 .ticket{position:relative;display:grid;grid-template-columns:1fr 150px;max-width:640px;margin:0 auto;text-align:left;border:1px solid var(--line);border-radius:14px;background:#141414}
 .ticket .main{padding:22px;min-width:0}
 .ticket .stub{border-left:2px dashed #333;padding:22px 16px;text-align:center;position:relative;background:#171a0e;border-radius:0 14px 14px 0}
 .ticket .stub::before,.ticket .stub::after{content:"";position:absolute;left:-11px;width:20px;height:20px;border-radius:50%;background:#0b0b0c}
 .ticket .stub::before{top:-11px}.ticket .stub::after{bottom:-11px}
 .stub .wl-lbl{font:600 10px var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
-.stub .num{font:700 44px/1 Inter,system-ui,sans-serif;color:var(--volt);margin:6px 0 2px;letter-spacing:-.03em}
+.stub .pass{font:700 20px/1.1 Inter,system-ui,sans-serif;color:var(--volt);margin:4px 0 2px;letter-spacing:.01em}
 .stub .bar{margin:14px auto 10px;height:30px;width:100px;background:repeating-linear-gradient(90deg,#c4c3bb 0 2px,transparent 2px 4px,#c4c3bb 4px 5px,transparent 5px 8px)}
 .stamp{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%) rotate(-14deg);border:3px solid var(--volt);color:var(--volt);font:800 17px var(--mono);letter-spacing:.12em;padding:5px 9px;border-radius:6px;background:rgba(11,11,12,.6);white-space:nowrap}
 .stops{display:flex;align-items:center;margin:0 0 6px}
@@ -194,30 +187,30 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .stops i.on{border-color:var(--volt);background:var(--volt);box-shadow:0 0 0 4px rgba(201,216,79,.18)}.stops i.dn{border-color:var(--volt);background:var(--volt)}
 .stops b{flex:1;height:2px;background:#333}.stops b.dn{background:var(--volt)}
 .stopn{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--dim);margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase}.stopn .on{color:var(--volt)}
-.tools{position:relative;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.tools{position:relative;display:flex;gap:8px;justify-content:flex-start;align-items:center;flex-wrap:wrap;margin-top:12px}
 .tools .t{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:6px 12px;font:500 13px Inter,system-ui,sans-serif;color:var(--ink);background:none;cursor:pointer}.tools .t:hover{border-color:var(--dim)}
 .tools .qt{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:600 12px Inter,sans-serif;color:#c4c3bb;background:none;cursor:pointer;padding:0}
-.tipbox{position:absolute;right:0;top:36px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.6);max-width:330px;text-align:left;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:#c4c3bb}
+.tipbox{position:absolute;left:0;top:36px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.6);max-width:330px;text-align:left;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:#c4c3bb}
 .tipbox a{color:var(--volt);cursor:pointer;display:inline-block;margin-top:6px}.tipbox pre{white-space:pre-wrap;font:12px/1.5 var(--mono);color:#c4c3bb;max-height:260px;overflow:auto;margin:8px 0 0;border-top:1px solid var(--line);padding-top:8px}
 .ticket .q{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:10px 0 12px;color:var(--ink);line-height:1.15}
 .ticket textarea,.ticket input[type=email]{width:100%;box-sizing:border-box;background:#0b0b0c;border:1px solid var(--line);border-radius:10px;color:var(--ink);font:15px Inter,system-ui,sans-serif;padding:11px 13px}
 .ticket textarea{min-height:84px;resize:vertical}.ticket textarea::placeholder,.ticket input::placeholder{color:#55534d}.ticket textarea:focus,.ticket input:focus{outline:none;border-color:var(--volt)}
 .ticket .ps{margin-top:10px;min-height:72px;font:12px/1.5 var(--mono)}
-.ticket .nv{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.ticket .nv{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
 .ib{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:#c4c3bb;font-size:18px;background:#0b0b0c;cursor:pointer;padding:0}.ib[disabled]{visibility:hidden}
 .ib.go{background:var(--volt);border-color:var(--volt);color:#0b0b0c;font-weight:700}.ib.go[aria-busy=true]{opacity:.6;cursor:wait}
 .cons{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14px;color:#c4c3bb;cursor:pointer}.cons input{margin-top:3px;accent-color:var(--volt)}
-.ticket .msg{min-height:18px;margin-top:8px;font-size:13px;color:var(--amber)}.ticket .msg.ok{color:var(--volt)}
+.ticket .msg{margin-top:10px;font-size:13px;color:var(--amber)}.ticket .msg:empty{display:none}.ticket .msg.ok{color:var(--volt)}
 .ticket .shot{display:block;width:100%;height:210px;object-fit:cover;border-radius:10px}
 .ticket.is-done .main{padding:14px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .room .wldone{margin:18px 0 0;color:#c4c3bb;font-size:15px}
-@media (prefers-reduced-motion:reduce){.queue .you,.blink{animation:none}}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
 @media (max-width:760px){.wrapbox{padding:30px 14px 22px}.dep{flex-direction:column;gap:10px;padding:12px}.tools .t{padding:5px 10px;font-size:12px}.tools{gap:6px}.flip span{width:19px;height:28px;font-size:15px}
  .ticket{grid-template-columns:1fr}.ticket .stub{order:-1;border-left:0;border-bottom:2px dashed #333;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;text-align:left}
  .ticket .stub::before,.ticket .stub::after{left:auto;top:auto;bottom:-11px}.ticket .stub::before{left:-11px}.ticket .stub::after{right:-11px}
- .stub .num{font-size:30px;margin:0}.stub .bar{margin:0;width:70px;height:22px}.stamp{font-size:13px;top:50%}
- .ticket .main{padding:16px}.ticket .q{font-size:22px}.tools{justify-content:flex-start}.ticket .shot{height:170px}}
+ .stub .pass{font-size:16px;margin:0}.stub .bar{margin:0;width:70px;height:22px}.stamp{font-size:13px;top:50%}
+ .ticket .main{padding:16px}.ticket .q{font-size:22px}.ticket .nv{margin-top:16px}.ticket .shot{height:170px}}
 .herotext h1.h1wide{font-size:clamp(40px,5.4vw,70px);max-width:none}.herotext:has(.h1wide){max-width:none}
 .legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
 @media (max-width:760px){.topnav{padding:14px 16px;gap:12px}.topnav a{white-space:nowrap}.topnav .brand{font-size:15px;gap:8px}.topnav .pill{padding:7px 12px;font-size:13px}.topnav .hide-sm{display:none}.topnav .bp{display:none}.herotext{display:flex;flex-direction:column;align-items:flex-start}.herotext h1{order:1;margin-bottom:10px}.herotext .bp-sm{display:inline-flex;order:2;margin:0 0 14px;font-size:12px;padding:4px 10px}.herotext p{order:3}.herotext .btn{order:4}header.hero{height:400px}}
@@ -343,10 +336,8 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 
 <section class="step room" id="s6" data-n="Get in line">
   <div class="wrapbox" id="wlbox">
-    <div class="dep" id="wldep" aria-live="polite"></div>
     <h2 id="wltitle" data-w="title">Get in line.</h2>
-    <div class="queue" id="wlq" aria-hidden="true"></div>
-    <p class="qcap" id="wlcap"></p>
+    <div class="dep" id="wldep" aria-live="polite"></div>
     <div class="ticket" id="wl"><noscript>Turn on JavaScript to join the waitlist, or email hi@reelixstudio.ai.</noscript></div>
     <p class="wldone" id="wldone" hidden></p>
   </div>
