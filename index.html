@@ -245,7 +245,8 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .maker img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;flex:none}
 .maker b{display:block;color:#f2f1ec;font-size:14px;font-weight:600;white-space:nowrap}.maker span span{font:12px var(--mono);color:#c4c3bb}
 @media (max-width:720px){.maker{right:14px;bottom:14px;gap:8px;padding:6px 14px 6px 6px}.maker img{width:40px;height:40px}.maker b{font-size:12.5px}.maker span span{font-size:11px}}
-@media (max-width:360px){header.hero{height:460px}header.hero .herotext{bottom:76px}.maker{left:16px;right:auto}} /* too narrow to share a row: the badge drops under the button */
+.sb>*{min-width:0} /* the storyboard strip may scroll inside its grid cell, never widen the page (320 px phones) */
+@media (max-width:360px){.topnav{gap:8px;padding:12px 12px}.topnav .brand{font-size:14px;gap:6px}.topnav .brand img{width:22px;height:22px}.topnav .pill{padding:6px 10px;font-size:12px}header.hero{height:460px}header.hero .herotext{bottom:76px}.maker{left:16px;right:auto}} /* too narrow to share a row: the badge drops under the button */
 .herotag{position:absolute;left:calc(6vw - 46px);top:22px;display:flex;align-items:center;gap:8px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#e9e8e0;background:rgba(0,0,0,.55);padding:6px 10px;border-radius:6px}
 .herotag i{width:8px;height:8px;border-radius:50%;background:var(--volt);animation:blink 1.6s ease-in-out infinite}@keyframes blink{50%{opacity:.25}}
 .rail{left:0;top:0;bottom:0;right:auto;transform:none;width:46px;gap:9px;justify-content:center;align-items:center;background:#060606;border-right:1px solid #1c1c19;counter-reset:fr;z-index:45}
@@ -295,7 +296,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
   <div class="heroshade"></div>
   <span class="herotag"><i></i>Now playing · Last Train, made here</span>
   <div class="herotext"><span class="bp bp-sm"><i></i><span data-w="nav.beta">Private beta</span></span><h1 class="h1wide">Make a film with your team<br>and your AI.</h1><p>Watch our last film get made below. Every step is the real thing, and you can click each one.</p><a class="btn" href="#s1">Start at step 01 ↓</a></div>
-  <a class="maker" href="https://www.youtube.com/@danneyteeaiart" target="_blank" rel="noopener" aria-label="Danney Tee on YouTube"><img src="assets/danney-avatar.jpg" alt="" width="52" height="52"><span><b>Danney Tee made this</b><span>@danneyteeaiart</span></span></a><!-- maker badge: its words live only here (Danney picked D3, 11-15) -->
+  <a class="maker" href="https://www.youtube.com/@danneyteeaiart" target="_blank" rel="noopener" aria-label="Danney Tee on YouTube"><img src="assets/danney-avatar.jpg" alt="" width="52" height="52"><span><b>Danney Tee</b><span>@danneyteeaiart</span></span></a><!-- maker badge: its words live only here (Danney picked D3, 11-15) -->
 </header>
 
 <section class="step" id="s1" data-n="Imagine">
