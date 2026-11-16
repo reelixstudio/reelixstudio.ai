@@ -80,7 +80,7 @@ const body = el("div"), msg = el("div", { className: "msg", role: "status" });
 const back = el("button", { type: "button", className: "ib", textContent: "←", "aria-label": F.back_label });
 const next = el("button", { type: "button", className: "ib go", textContent: "→", "aria-label": F.next_label });
 const hp = el("input", { type: "text", name: "website", tabIndex: -1, autocomplete: "off", className: "hp", "aria-hidden": "true" }); // honeypot
-const main = el("div", { className: "main" }, stops, stopn, tools, body, ps, el("div", { className: "nv" }, back, next), msg);
+const main = el("div", { className: "main" }, stops, stopn, body, tools, ps, el("div", { className: "nv" }, back, next), msg); // Danney 11-16: helpers sit under the answer box, left
 const stub = el("div", { className: "stub" }, el("div", { className: "pass", textContent: F.pass }), el("div", {}, el("div", { className: "bar" }), el("div", { className: "wl-lbl", textContent: F.stub_brand })));
 
 ps.addEventListener("input", () => {

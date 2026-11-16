@@ -187,20 +187,20 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .stops i.on{border-color:var(--volt);background:var(--volt);box-shadow:0 0 0 4px rgba(201,216,79,.18)}.stops i.dn{border-color:var(--volt);background:var(--volt)}
 .stops b{flex:1;height:2px;background:#333}.stops b.dn{background:var(--volt)}
 .stopn{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--dim);margin-bottom:14px;letter-spacing:.06em;text-transform:uppercase}.stopn .on{color:var(--volt)}
-.tools{position:relative;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.tools{position:relative;display:flex;gap:8px;justify-content:flex-start;align-items:center;flex-wrap:wrap;margin-top:12px}
 .tools .t{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:6px 12px;font:500 13px Inter,system-ui,sans-serif;color:var(--ink);background:none;cursor:pointer}.tools .t:hover{border-color:var(--dim)}
 .tools .qt{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:600 12px Inter,sans-serif;color:#c4c3bb;background:none;cursor:pointer;padding:0}
-.tipbox{position:absolute;right:0;top:36px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.6);max-width:330px;text-align:left;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:#c4c3bb}
+.tipbox{position:absolute;left:0;top:36px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.6);max-width:330px;text-align:left;background:#1c1c1c;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;color:#c4c3bb}
 .tipbox a{color:var(--volt);cursor:pointer;display:inline-block;margin-top:6px}.tipbox pre{white-space:pre-wrap;font:12px/1.5 var(--mono);color:#c4c3bb;max-height:260px;overflow:auto;margin:8px 0 0;border-top:1px solid var(--line);padding-top:8px}
 .ticket .q{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:10px 0 12px;color:var(--ink);line-height:1.15}
 .ticket textarea,.ticket input[type=email]{width:100%;box-sizing:border-box;background:#0b0b0c;border:1px solid var(--line);border-radius:10px;color:var(--ink);font:15px Inter,system-ui,sans-serif;padding:11px 13px}
 .ticket textarea{min-height:84px;resize:vertical}.ticket textarea::placeholder,.ticket input::placeholder{color:#55534d}.ticket textarea:focus,.ticket input:focus{outline:none;border-color:var(--volt)}
 .ticket .ps{margin-top:10px;min-height:72px;font:12px/1.5 var(--mono)}
-.ticket .nv{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.ticket .nv{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
 .ib{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:#c4c3bb;font-size:18px;background:#0b0b0c;cursor:pointer;padding:0}.ib[disabled]{visibility:hidden}
 .ib.go{background:var(--volt);border-color:var(--volt);color:#0b0b0c;font-weight:700}.ib.go[aria-busy=true]{opacity:.6;cursor:wait}
 .cons{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14px;color:#c4c3bb;cursor:pointer}.cons input{margin-top:3px;accent-color:var(--volt)}
-.ticket .msg{min-height:18px;margin-top:8px;font-size:13px;color:var(--amber)}.ticket .msg.ok{color:var(--volt)}
+.ticket .msg{margin-top:10px;font-size:13px;color:var(--amber)}.ticket .msg:empty{display:none}.ticket .msg.ok{color:var(--volt)}
 .ticket .shot{display:block;width:100%;height:210px;object-fit:cover;border-radius:10px}
 .ticket.is-done .main{padding:14px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -210,7 +210,7 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
  .ticket{grid-template-columns:1fr}.ticket .stub{order:-1;border-left:0;border-bottom:2px dashed #333;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;text-align:left}
  .ticket .stub::before,.ticket .stub::after{left:auto;top:auto;bottom:-11px}.ticket .stub::before{left:-11px}.ticket .stub::after{right:-11px}
  .stub .pass{font-size:16px;margin:0}.stub .bar{margin:0;width:70px;height:22px}.stamp{font-size:13px;top:50%}
- .ticket .main{padding:16px}.ticket .q{font-size:22px}.tools{justify-content:flex-start}.ticket .shot{height:170px}}
+ .ticket .main{padding:16px}.ticket .q{font-size:22px}.ticket .nv{margin-top:16px}.ticket .shot{height:170px}}
 .herotext h1.h1wide{font-size:clamp(40px,5.4vw,70px);max-width:none}.herotext:has(.h1wide){max-width:none}
 .legal{display:flex;gap:16px;justify-content:center;padding:26px 16px 34px;font-size:12px;color:#77776f;border-top:1px solid var(--line)}.legal a{color:#8d8c86;text-decoration:none}
 @media (max-width:760px){.topnav{padding:14px 16px;gap:12px}.topnav a{white-space:nowrap}.topnav .brand{font-size:15px;gap:8px}.topnav .pill{padding:7px 12px;font-size:13px}.topnav .hide-sm{display:none}.topnav .bp{display:none}.herotext{display:flex;flex-direction:column;align-items:flex-start}.herotext h1{order:1;margin-bottom:10px}.herotext .bp-sm{display:inline-flex;order:2;margin:0 0 14px;font-size:12px;padding:4px 10px}.herotext p{order:3}.herotext .btn{order:4}header.hero{height:400px}}
