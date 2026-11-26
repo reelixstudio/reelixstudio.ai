@@ -1,9 +1,10 @@
 // Beta waitlist (#s6) on reelixstudio.ai, v2 playful (Design SPEC-playful, Danney's go 2026-11-15).
 // Every word, the questions and the AI prompt come from the Room
 // (room.reelixstudio.ai/api/waitlist/form, one list in room/src/data/welcome.ts). Nothing here is typed in.
-// "Get in line." → departure board → a ticket: stops, one question per stop, Copy AI prompt / Paste answer / ?, round
-// ← → buttons, a BOARDING PASS stub. Done: BOARDED, a stamp, a Last Train frame. No line count or seat number in public
-// (Danney 11-15).
+// "Get in line." → departure board → a ticket with a BOARDING PASS stub. No line count or seat number in public (Danney 11-15).
+// Email first (2026-11-26, Danney "you decide"): the first stop is just the email + Join. Joining saves them and stamps
+// BOARDED straight away. Then up to three OPTIONAL questions, each with Skip and "I'm done"; every answer saves as it goes
+// (the Room keeps earlier answers when a later send is email-only). Joining is the yes to the one beta email (F.consent says so).
 const API = (location.hostname === "localhost" && new URLSearchParams(location.search).get("wlapi")) || "https://room.reelixstudio.ai/api/waitlist"; // ?wlapi= only for local testing
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, props = {}, ...kids) => {
@@ -50,8 +51,10 @@ if (!still) {
 }
 
 // ---------- the ticket ----------
-const Q = F.questions, STOPS = [...Q.map((q) => q.stop || q.id), F.email_stop];
-const S = { i: 0, answers: Object.fromEntries(Q.map((q) => [q.id, ""])), email: "", consent: false, via: "typed", sending: false };
+const Q = F.questions, STOPS = [F.email_stop, ...Q.map((q) => q.stop || q.id)];
+// phase: "email" (stop 0) → "q" (S.i = question index) → "done"
+const S = { phase: "email", i: 0, answers: Object.fromEntries(Q.map((q) => [q.id, ""])), email: "", via: "typed", sending: false, saved: {} }; // saved = the answers the Room has
+const at = () => (S.phase === "email" ? 0 : S.phase === "q" ? S.i + 1 : STOPS.length);
 
 const stops = el("div", { className: "stops", "aria-hidden": "true" }), stopn = el("div", { className: "stopn" });
 const copy = el("button", { type: "button", className: "t", textContent: F.copy_short });
@@ -76,11 +79,17 @@ copy.onclick = async () => {
 
 const ps = el("textarea", { className: "ps", hidden: true, placeholder: [F.format.head, ...F.format.keys.map((k) => `${k}: …`)].join("\n"), "aria-label": F.paste_label });
 pasteBtn.onclick = () => { ps.hidden = !ps.hidden; pasteBtn.setAttribute("aria-expanded", String(!ps.hidden)); if (!ps.hidden) ps.focus(); };
+const kick = el("div", { className: "wl-kick", textContent: F.more_kick });
 const body = el("div"), msg = el("div", { className: "msg", role: "status" });
 const back = el("button", { type: "button", className: "ib", textContent: "←", "aria-label": F.back_label });
 const next = el("button", { type: "button", className: "ib go", textContent: "→", "aria-label": F.next_label });
+const join = el("button", { type: "button", className: "wl-join", textContent: F.join });
+const skip = el("button", { type: "button", className: "wl-skip", textContent: F.skip });
+const finish = el("button", { type: "button", className: "wl-skip", textContent: F.finish });
+const right = el("div", { className: "wl-right" });
 const hp = el("input", { type: "text", name: "website", tabIndex: -1, autocomplete: "off", className: "hp", "aria-hidden": "true" }); // honeypot
-const main = el("div", { className: "main" }, stops, stopn, body, tools, ps, el("div", { className: "nv" }, back, next), msg); // Danney 11-16: helpers sit under the answer box, left
+const nv = el("div", { className: "nv" });
+const main = el("div", { className: "main" }, stops, stopn, kick, body, tools, ps, nv, msg); // Danney 11-16: helpers sit under the answer box, left
 const stub = el("div", { className: "stub" }, el("div", { className: "pass", textContent: F.pass }), el("div", {}, el("div", { className: "bar" }), el("div", { className: "wl-lbl", textContent: F.stub_brand })));
 
 ps.addEventListener("input", () => {
@@ -108,54 +117,80 @@ function parse(text) {
 }
 
 function draw() {
-  const last = S.i === Q.length;
-  stops.replaceChildren(...STOPS.flatMap((_, k) => [k ? el("b", { className: k <= S.i ? "dn" : "" }) : null, el("i", { className: k < S.i ? "dn" : k === S.i ? "on" : "" })].filter(Boolean)));
-  stopn.replaceChildren(...STOPS.map((s, k) => el("span", { className: k === S.i ? "on" : "", textContent: s })));
-  back.disabled = S.i === 0;
-  if (!last) {
-    const q = Q[S.i];
-    const ta = el("textarea", { placeholder: F.hint_placeholder, value: S.answers[q.id], "aria-label": q.label });
-    ta.oninput = () => { S.answers[q.id] = ta.value; };
-    ta.onkeydown = (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) next.click(); };
-    body.replaceChildren(el("div", { className: "q", textContent: q.label }), ta);
-    next.setAttribute("aria-label", F.next_label);
-  } else {
+  const k0 = at();
+  stops.replaceChildren(...STOPS.flatMap((_, k) => [k ? el("b", { className: k <= k0 ? "dn" : "" }) : null, el("i", { className: (k < k0 ? "dn" : k === k0 ? "on" : "") + (k ? " opt" : "") })].filter(Boolean)));
+  stopn.replaceChildren(...STOPS.map((s, k) => el("span", { className: k === k0 ? "on" : "", textContent: s })));
+  kick.hidden = S.phase !== "q";
+  if (S.phase === "email") {
     const em = el("input", { type: "email", placeholder: F.email.placeholder, value: S.email, autocomplete: "email", "aria-label": F.email.label });
     em.oninput = () => { S.email = em.value; };
-    em.onkeydown = (e) => { if (e.key === "Enter") next.click(); };
-    const cb = el("input", { type: "checkbox", checked: S.consent }); cb.onchange = () => { S.consent = cb.checked; };
-    body.replaceChildren(el("div", { className: "q", textContent: F.email.label }), em, el("label", { className: "cons" }, cb, el("span", { textContent: F.consent })), hp);
-    next.setAttribute("aria-label", F.send_label);
+    em.onkeydown = (e) => { if (e.key === "Enter") join.click(); };
+    body.replaceChildren(el("div", { className: "q", textContent: F.email.label }), em, el("p", { className: "wl-note", textContent: F.quick + " " + F.consent }), hp);
+    tools.hidden = true; ps.hidden = true;
+    nv.className = "nv wl-email"; nv.replaceChildren(join);
+    return;
   }
+  const q = Q[S.i];
+  const ta = el("textarea", { placeholder: q.placeholder || F.hint_placeholder, value: S.answers[q.id], "aria-label": q.label });
+  ta.oninput = () => { S.answers[q.id] = ta.value; };
+  ta.onkeydown = (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) next.click(); };
+  body.replaceChildren(el("div", { className: "q", textContent: q.label }), ta); // "optional" is said once, in the kick line above
+  tools.hidden = false;
+  back.disabled = S.i === 0;
+  next.setAttribute("aria-label", S.i === Q.length - 1 ? F.finish : F.next_label);
+  right.replaceChildren(skip, next);
+  nv.className = "nv"; nv.replaceChildren(el("div", { className: "wl-left" }, back, finish), right);
 }
-back.onclick = () => { if (S.i > 0) { S.i--; msg.textContent = ""; draw(); } };
-next.onclick = async () => {
-  if (S.i < Q.length) { S.i++; msg.textContent = ""; draw(); body.querySelector("textarea,input")?.focus(); return; }
+
+const clean = () => Object.fromEntries(Object.entries(S.answers).map(([k, v]) => [k, v.trim()]).filter(([, v]) => v));
+async function send() { // the same email row every time; answers only when there are some
+  const answers = clean();
+  const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: S.email.trim(), answers, consent: true, via: S.via, website: hp.value || undefined }) });
+  if (r.status === 429) throw new Error(F.slow_down);
+  if (!r.ok) throw new Error(F.failed);
+  S.saved = answers;
+  return r.json();
+}
+const busy = (on, b) => { S.sending = on; if (on) b.setAttribute("aria-busy", "true"); else b.removeAttribute("aria-busy"); };
+const oops = (e) => { msg.className = "msg"; msg.textContent = e.message && e.message !== "Failed to fetch" ? e.message : F.failed; };
+
+join.onclick = async () => {
   if (S.sending) return; // rough hands: one send at a time
   const email = S.email.trim();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.className = "msg"; msg.textContent = F.need_email; return; }
-  S.sending = true; next.setAttribute("aria-busy", "true"); msg.className = "msg"; msg.textContent = F.sending;
-  try {
-    const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, answers: S.answers, consent: S.consent, via: S.via, website: hp.value || undefined }) });
-    if (r.status === 429) throw new Error(F.slow_down);
-    if (!r.ok) throw new Error(F.failed);
-    const d = await r.json();
-    done(email, d);
-  } catch (e) {
-    msg.textContent = e.message && e.message !== "Failed to fetch" ? e.message : F.failed;
-    S.sending = false; next.removeAttribute("aria-busy");
-  }
+  busy(true, join); msg.className = "msg"; msg.textContent = F.sending;
+  try { await send(); boarded(); S.phase = "q"; S.i = 0; msg.textContent = ""; draw(); body.querySelector("textarea")?.focus({ preventScroll: true }); }
+  catch (e) { oops(e); }
+  busy(false, join);
 };
+async function step(to) { // to = next question index, or Q.length = finished
+  if (S.sending) return;
+  const dirty = JSON.stringify(clean()) !== JSON.stringify(S.saved);
+  if (dirty) {
+    busy(true, next);
+    try { await send(); } catch (e) { oops(e); busy(false, next); return; }
+    busy(false, next);
+  }
+  if (to >= Q.length) return finished();
+  S.i = to; msg.className = "msg ok"; msg.textContent = dirty ? F.saved : ""; draw(); body.querySelector("textarea")?.focus({ preventScroll: true });
+}
+next.onclick = () => step(S.i + 1);
+skip.onclick = () => { const id = Q[S.i].id; S.answers[id] = S.saved[id] ?? ""; step(S.i + 1); }; // drop unsaved typing here, keep what was saved
+finish.onclick = () => step(Q.length);
+back.onclick = () => { if (S.i > 0) { S.i--; msg.textContent = ""; draw(); } };
 
-function done(email, d) {
+function boarded() { // on the list: title, board, stamp, the line under the ticket
   $("#wltitle").textContent = F.title_done;
   const st = flipRow(F.board.status_done, "st");
   statWrap.replaceChildren(st, el("i", { className: "blink" })); settle(st, F.board.status_done);
   dep.setAttribute("aria-label", `${F.board.dest_label}: ${F.board.dest}. ${F.board.status_label}: ${F.board.status_done}.`);
-  ticket.classList.add("is-done");
-  main.replaceChildren(el("img", { className: "shot", src: F.done_image, alt: F.done_image_alt }));
   stub.append(el("span", { className: "stamp", textContent: F.board.status_done }));
   const line = $("#wldone"); line.textContent = "✉ " + F.done_line; line.hidden = false;
+}
+function finished() {
+  S.phase = "done";
+  ticket.classList.add("is-done");
+  main.replaceChildren(el("img", { className: "shot", src: F.done_image, alt: F.done_image_alt }));
 }
 
 ticket.replaceChildren(main, stub);
