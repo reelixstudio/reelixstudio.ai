@@ -205,6 +205,15 @@ h1{font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-.03em;margin:
 .ticket.is-done .main{padding:14px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .room .wldone{margin:18px 0 0;color:#c4c3bb;font-size:15px}
+/* Email first (2026-11-26): stop 1 = email + one big Join; questions after are optional (dashed stops, Skip, I'm done) */
+.ticket [hidden]{display:none!important}
+.wl-kick{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--volt);margin:2px 0 -2px}
+.wl-note{margin:10px 0 0;font-size:13px;line-height:1.45;color:var(--dim)}
+.ticket .nv.wl-email{margin-top:16px}
+.wl-join{width:100%;height:50px;border:0;border-radius:99px;background:var(--volt);color:#0b0b0c;font:700 16px Inter,system-ui,sans-serif;cursor:pointer}.wl-join:hover{filter:brightness(1.07)}.wl-join[aria-busy=true]{opacity:.6;cursor:wait}
+.wl-left,.wl-right{display:flex;align-items:center;gap:10px}.wl-left .ib[disabled]{display:none}
+.wl-skip{background:none;border:0;padding:8px 4px;color:var(--dim);font:500 14px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.wl-skip:hover{color:var(--ink)}
+.stops i.opt:not(.on):not(.dn){border-style:dashed}
 @media (prefers-reduced-motion:reduce){.blink{animation:none}}
 @media (max-width:760px){.wrapbox{padding:30px 14px 22px}.dep{flex-direction:column;gap:10px;padding:12px}.tools .t{padding:5px 10px;font-size:12px}.tools{gap:6px}.flip span{width:19px;height:28px;font-size:15px}
  .ticket{grid-template-columns:1fr}.ticket .stub{order:-1;border-left:0;border-bottom:2px dashed #333;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;text-align:left}
